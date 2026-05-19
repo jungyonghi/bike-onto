@@ -1,0 +1,26 @@
+{
+  "# Timestamp": "2026-04-27 19:18:29",
+  "doc_count": 745,
+  "embedding_backend": "sentence-transformers",
+  "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+  "embedding_device": "cpu",
+  "embedding_dim": 384,
+  "index_backend": "faiss.IndexFlatIP",
+  "index_file": "index.faiss",
+  "documents_file": "documents.jsonl",
+  "profile": "ontology-hybrid",
+  "source_manifest": "data/raw/_download_ontology_bundle_2026-04-27.json",
+  "corpus_counts": {
+    "station_profile": 500,
+    "dataset_inventory_brief": 9,
+    "query_axis_brief": 9,
+    "dataset_aggregate_brief": 9,
+    "dataset_overview_brief": 10,
+    "file_window_brief": 173,
+    "page_only_brief": 3,
+    "document_overview_brief": 27,
+    "blocked_artifact_brief": 5
+  },
+  "blocked_artifact_count": 5,
+  "dataset_profile_count": 9
+}

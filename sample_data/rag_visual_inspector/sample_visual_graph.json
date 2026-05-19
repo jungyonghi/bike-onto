@@ -1,0 +1,34 @@
+{
+  "kind": "evaluation_overview",
+  "title": "RAG Evaluation Overview",
+  "summary": {
+    "questionCount": 4
+  },
+  "nodes": [
+    {
+      "id": "entity:station-152",
+      "type": "entity",
+      "label": "충무로역 3.4호선 (ST-152)",
+      "metadata": {
+        "id": "station:152",
+        "type": "Station"
+      }
+    },
+    {
+      "id": "relation:forStation",
+      "type": "relation",
+      "label": "대상 대여소",
+      "metadata": {
+        "relation": "forStation"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "relation:forStation",
+      "target": "entity:station-152",
+      "label": "대상 대여소",
+      "relationType": "uses"
+    }
+  ]
+}

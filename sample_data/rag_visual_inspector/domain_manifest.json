@@ -1,0 +1,31 @@
+{
+  "domain_dir": "sample_data/rag_visual_inspector",
+  "total_files": 4,
+  "artifact_counts": {
+    "json": 2,
+    "jsonl": 1,
+    "md": 1
+  },
+  "resolved_artifacts": {
+    "evaluation_results": "sample_eval_results.jsonl",
+    "visual_graph": "sample_visual_graph.json",
+    "domain_manifest": "domain_manifest.json"
+  },
+  "sample_files": [
+    "README.md",
+    "domain_manifest.json",
+    "sample_eval_results.jsonl",
+    "sample_visual_graph.json"
+  ],
+  "fragmentation_signals": [
+    "multiple_file_formats_detected",
+    "document_sources_detected",
+    "evaluation_results_cli_target_detected",
+    "visual_graph_cli_target_detected"
+  ],
+  "cli_targets": {
+    "visual_eval": "sample_eval_results.jsonl",
+    "wiki_export_results": "sample_eval_results.jsonl",
+    "wiki_export_graph": "sample_visual_graph.json"
+  }
+}

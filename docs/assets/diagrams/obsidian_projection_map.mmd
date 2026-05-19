@@ -1,0 +1,21 @@
+%% Timestamp: 2026-05-19 15:44:00
+flowchart TD
+    A[evaluation_results.jsonl] --> E[wiki-export]
+    B[visual_graph.json] --> E
+    C[screenshots] --> E
+    D[run_id] --> E
+
+    E --> I[00_Index.md\ndashboard / hotlist / query examples]
+    E --> R[01_Runs\nrun notes]
+    E --> Q[02_Evaluation/questions\nquestion notes]
+    E --> V[03_Review_Queue\nreview candidates]
+    E --> N[04_Entities\nhuman-readable entity notes]
+    E --> O[05_Ontology\nconcept + relation notes]
+    E --> S[99_Assets\nscreenshot evidence]
+
+    Q --> N
+    Q --> O
+    V --> Q
+    I --> R
+    I --> Q
+    I --> N

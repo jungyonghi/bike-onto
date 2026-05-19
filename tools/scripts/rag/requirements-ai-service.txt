@@ -1,0 +1,8 @@
+# Timestamp: 2026-05-18 16:52:00
+# OBYBK CLI-first AI service extension dependencies
+fastapi>=0.115.0
+uvicorn>=0.30.0
+psycopg[binary]>=3.2.0
+scikit-learn>=1.4.0
+# Optional heavier baseline for tabular/text ML experiments:
+# catboost>=1.2.0

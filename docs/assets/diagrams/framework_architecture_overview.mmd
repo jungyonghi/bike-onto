@@ -1,0 +1,19 @@
+%% Timestamp: 2026-05-19 15:44:00
+flowchart TD
+    A[Fragmented Domain Sources\nraw tables / exports / documents / captures] --> B[Domain Artifact Directory\nruntime_answers / pgvector_seed / evaluation_results / visual_graph]
+    B --> C[inspect-dir\ndomain_manifest.json]
+    C --> D[CLI Orchestrator\ngeneral_rag_cli.py]
+
+    D --> E[Answer Backend\nrag_llm_answer_endpoint.py]
+    E --> F[Retrieval\nlocal seed or PostgreSQL/pgvector]
+    F --> G[Evidence Bundle\nentity / relation / metric / action]
+    G --> H[Answer Composer\nprofile-aware answer contract]
+    H --> I[RAG Answer Payload]
+
+    I --> J[VisualGraphPayload]
+    J --> K[Single Answer Visual Inspector\nHTML/SVG]
+    D --> L[Evaluation Overview\n100-QA category graph]
+    L --> M[Obsidian Wiki Export\nrun/question/entity/relation notes]
+    I --> N[Report / screenshots]
+    D --> O[Local RAG Store\nrun/eval/review/snippet]
+    D --> P[pgvector Adapter\ninit/load/status/search]

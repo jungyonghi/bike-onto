@@ -1,0 +1,86 @@
+# Secrets and local credentials
+**/.env
+**/.env.*
+**/*.local
+**/*.key
+**/*.pem
+**/*.p12
+**/*.pfx
+**/*.crt
+**/*id_rsa*
+**/*id_ed25519*
+**/credentials.json
+**/client_secret*.json
+**/service_account*.json
+**/token.json
+**/.credentials/
+**/secrets*.json
+
+# Dependency and virtual environment folders
+**/node_modules/
+**/.venv/
+**/venv/
+**/ENV/
+**/env/
+
+# Python and tool caches
+**/__pycache__/
+**/.pytest_cache/
+**/.mypy_cache/
+**/.ruff_cache/
+**/.cache/
+**/dist/
+**/build/
+**/tmp/
+
+# Large or generated model artifacts
+**/*.gguf
+**/*.safetensors
+**/*.onnx
+**/*.ckpt
+**/*.pt
+**/*.pth
+
+# Notebook scratch artifacts
+**/*.ipynb_checkpoints
+
+# Database and local runtime files
+**/*.sqlite
+**/*.sqlite-*
+**/*.log
+**/*.tmp
+
+# Ignore large local data by default, but keep small reproducible fixtures used by tests.
+/data/raw/**
+!/data/raw/
+!/data/raw/public/
+!/data/raw/public/서울시 공공자전거 따릉이 대여소 마스터 정보.csv
+
+/data/processed/**
+!/data/processed/
+!/data/processed/parquet/
+!/data/processed/parquet/bike_cloud/
+!/data/processed/parquet/bike_cloud/*.parquet
+!/data/processed/rag/
+!/data/processed/rag/ttareungi_rag_index/
+!/data/processed/rag/ttareungi_rag_index/**
+!/data/processed/rag/ttareungi_rag_index_db_only/
+!/data/processed/rag/ttareungi_rag_index_db_only/**
+
+/data/captures/
+/references/external/
+/references/literature/asets/
+/references/literature/assets/
+/artifacts/
+/archive/
+/tmp/
+
+# Root-level local debug outputs
+/debug_*.html
+/ffcr_test_results.csv
+
+# HTTrack transient files
+**/hts-cache/
+**/hts-log.txt
+**/hts_in_progress.lock
+**/cookies.txt

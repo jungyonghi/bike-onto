@@ -1,0 +1,9 @@
+# Timestamp: 2026-04-22 00:16:29
+# Timestamp: 2026-04-27 17:46:00
+# Timestamp: 2026-04-27 18:22:00
+streamlit==1.56.0
+pandas>=2.2.0
+pyarrow>=16.0.0
+sentence-transformers>=3.0.0
+datasets>=2.20.0
+faiss-cpu>=1.8.0

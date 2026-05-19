@@ -1,0 +1,13 @@
+%% Timestamp: 2026-05-19 15:44:00
+flowchart LR
+    A[Business Model Ontology\nOsterwalder 4 pillars / 9 elements] --> B[OWL2DL Formalization Blueprint\ndocs/project/business_model_ontology_owl2dl_formalization_blueprint.md]
+    B --> C[Upper Ontology Seed Generator\ngenerate_codex_upper_ontology_seed.py]
+    C --> D[1000 Candidate Records\n12 categories x 7 facets]
+    D --> E[Promotion Records\ncore_upper / general_reference]
+
+    F[Competency Questions\nQO ontology-needed 50\nQP DB-only baseline 50] --> G[Gap / relation / role analysis]
+    E --> H[Reusable Upper Ontology Anchors]
+    G --> I[Domain Ontology Slice\nStation / TripEvent / Weather / Failure / Evidence]
+    H --> I
+    I --> J[Ontology-Hybrid RAG\nquery routing + evidence graph]
+    J --> K[Visual Inspector + Obsidian Wiki]
