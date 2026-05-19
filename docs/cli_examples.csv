@@ -1,6 +1,7 @@
 workflow,command,purpose,save_as
 First-run setup,./bike setup --yes --offline,"Create local user config once. Secrets, if used, live outside the repo under the user config directory.",Local config
 Chatbot mode,./bike,"After setup, start an interactive RAG chat loop with no long flags.",Terminal chat
+Pi extension,pi  # project-local .pi/extensions/bike-onto auto-loads; then run /bike-setup or /bike-tools,Use Bike Onto as a Pi extension with LLM-callable RAG inspection tools.,Agent harness tools
 Inspect domain directory,./bike inspect-dir --domain-dir sample_data/rag_visual_inspector --output artifacts/domain_manifest.json --json,Resolve runnable artifact paths from a fragmented domain folder.,JSON manifest
 Evaluation overview,./bike visual-eval --results-jsonl sample_data/rag_visual_inspector/sample_eval_results.jsonl --output artifacts/evaluation_overview.html --graph-json artifacts/evaluation_overview.visual_graph.json --json,Render the 100-QA inspection overview as a local HTML visual graph.,HTML + JSON
 Obsidian wiki export,./bike wiki-export --results-jsonl sample_data/rag_visual_inspector/sample_eval_results.jsonl --graph-json sample_data/rag_visual_inspector/sample_visual_graph.json --vault artifacts/OBYBK_RAG_Wiki --run-id demo_run --json,"Project questions, entities, relations, and review queue into an Obsidian vault.",Markdown vault
