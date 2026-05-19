@@ -9,4 +9,4 @@ Generated explanatory diagrams used by the top-level README.
 - `obsidian_projection_map.mmd`: evaluation result to Obsidian ontology wiki projection.
 - `bmo_anchor_rag_inspection_paper_figure.mmd`: Mermaid source for the BMO anchor paper-style figure.
 
-PNG files are kept as screenshot-like visual assets, but Mermaid sources are the canonical editable diagrams.
+Diagram PNG files were removed from the repository. Mermaid sources are the canonical editable diagrams.
