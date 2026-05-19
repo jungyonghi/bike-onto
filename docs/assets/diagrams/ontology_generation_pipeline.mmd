@@ -1,13 +1,62 @@
-%% Timestamp: 2026-05-19 15:44:00
+%% Bike Onto / OBYBK ontology generation pipeline
 flowchart LR
-    A[Business Model Ontology\nOsterwalder 4 pillars / 9 elements] --> B[OWL2DL Formalization Blueprint\ndocs/project/business_model_ontology_owl2dl_formalization_blueprint.md]
-    B --> C[Upper Ontology Seed Generator\ngenerate_codex_upper_ontology_seed.py]
-    C --> D[1000 Candidate Records\n12 categories x 7 facets]
-    D --> E[Promotion Records\ncore_upper / general_reference]
+    subgraph A[Conceptual anchor]
+        BMO[Business Model Ontology paper\nOsterwalder]
+        P4[4 pillars\nProduct / Customer Interface\nInfrastructure / Financial]
+        E9[9 elements\nValue / Customer / Channel\nRelationship / Capability\nConfiguration / Partnership\nRevenue / Cost]
+        BMO --> P4
+        BMO --> E9
+    end
 
-    F[Competency Questions\nQO ontology-needed 50\nQP DB-only baseline 50] --> G[Gap / relation / role analysis]
-    E --> H[Reusable Upper Ontology Anchors]
-    G --> I[Domain Ontology Slice\nStation / TripEvent / Weather / Failure / Evidence]
-    H --> I
-    I --> J[Ontology-Hybrid RAG\nquery routing + evidence graph]
-    J --> K[Visual Inspector + Obsidian Wiki]
+    subgraph B[Formalization blueprint]
+        BP[OWL 2 DL-style blueprint]
+        TBOX[TBox classes\nBusinessModelDescription\nPillar / Element / SubElement]
+        PROPS[Object properties\nvalueForCustomer\nsupportsValueProposition\nusesDataset / hasEvidence]
+        CODE[Code lists + constraints\nvalue level / lifecycle\nSHACL roadmap]
+        BP --> TBOX
+        BP --> PROPS
+        BP --> CODE
+    end
+
+    subgraph C[Upper ontology seed]
+        GEN[generate_codex_upper_ontology_seed.py]
+        CAT[12 general categories\nactor / org / place / time\nasset / event / capability\ndocument / policy / value\nrisk / channel]
+        FAC[7 facets\nIdentity / Boundary / Role\nState / Relation / Lifecycle\nEvidence]
+        CAND[1,000 candidate records\nrelevance / reusability\ncentrality / clarity\ncomposability]
+        PROMO[Promotion records\ncore_upper\ngeneral_reference]
+        GEN --> CAT
+        GEN --> FAC
+        CAT --> CAND
+        FAC --> CAND
+        CAND --> PROMO
+    end
+
+    subgraph D[Domain binding]
+        ART[Domain artifacts\ntables / docs / exports]
+        MAN[domain_manifest.json]
+        QP[QP questions\nexecutable data queries]
+        QO[QO questions\nmetric / relation / provenance\nreview gate]
+        SLICE[Domain ontology slice\nentities / relations / evidence roles]
+        ART --> MAN
+        MAN --> QP
+        MAN --> QO
+        PROMO --> SLICE
+        QP --> SLICE
+        QO --> SLICE
+    end
+
+    subgraph E[Runtime projection]
+        RAG[RAG answer payload]
+        DEC[Inspection decomposition\nclaim / evidence / entity / relation]
+        REV[Answerability + review policy]
+        VGP[VisualGraphPayload]
+        OUT[Visual Inspector\nEvaluation Overview\nObsidian Wiki]
+        SLICE --> RAG
+        RAG --> REV
+        REV --> DEC
+        DEC --> VGP
+        VGP --> OUT
+    end
+
+    BMO --> BP
+    BP --> GEN

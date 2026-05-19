@@ -1,0 +1,71 @@
+%% Bike Onto / OBYBK BMO anchor paper-style figure
+flowchart LR
+    subgraph C1[1. BMO Paper Anchor]
+        BMO[Osterwalder\nBusiness Model Ontology]
+        P4[4 pillars]
+        E9[9 business model elements]
+        AXIS[Top-level axes are paper-anchored\nnot ad-hoc LLM categories]
+        BMO --> P4
+        BMO --> E9
+        P4 --> AXIS
+        E9 --> AXIS
+    end
+
+    subgraph C2[2. OWL 2 DL Blueprint]
+        BP[Formalization blueprint]
+        TBOX[TBox / ABox split]
+        CLS[BusinessModelDescription\nPillar / Element / SubElement]
+        PROP[Properties + code lists]
+        BP --> TBOX
+        BP --> CLS
+        BP --> PROP
+    end
+
+    subgraph C3[3. Upper Ontology Seed]
+        GEN[Seed generator]
+        CAND[1,000 candidate records]
+        SCORE[Scores\nreusability / centrality\nclarity / composability]
+        PROMO[Promotion records\ncore_upper / general_reference]
+        GEN --> CAND --> SCORE --> PROMO
+    end
+
+    subgraph C4[4. Domain Binding]
+        ART[Domain artifacts]
+        MAN[domain_manifest.json]
+        QPQO[Domain-generated QP/QO\ncompetency questions]
+        ART --> MAN --> QPQO
+    end
+
+    subgraph C5[5. RAG Inspection Runtime]
+        PAY[RAG answer payload]
+        CL[Claim]
+        EV[Evidence]
+        EN[Entity]
+        REL[Relation]
+        RG[Review Gate]
+        PAY --> CL
+        PAY --> EV
+        PAY --> EN
+        PAY --> REL
+        PAY --> RG
+    end
+
+    subgraph C6[6. Inspection Artifacts]
+        VGP[VisualGraphPayload]
+        VIS[Visual Inspector]
+        EVAL[Evaluation Overview]
+        OBS[Obsidian Wiki]
+        STORE[Local store / pgvector]
+        VGP --> VIS
+        VGP --> EVAL
+        VGP --> OBS
+        VGP --> STORE
+    end
+
+    C1 --> C2 --> C3 --> C4 --> C5 --> C6
+
+    C1 -. conceptual seed .-> CL
+    C2 -. formal constraints .-> REL
+    C3 -. reusable anchors .-> EN
+    C4 -. domain questions .-> RG
+    C5 --> VGP

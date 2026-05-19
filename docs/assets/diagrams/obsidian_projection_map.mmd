@@ -1,21 +1,55 @@
-%% Timestamp: 2026-05-19 15:44:00
+%% Bike Onto / OBYBK Obsidian projection map
 flowchart TD
-    A[evaluation_results.jsonl] --> E[wiki-export]
-    B[visual_graph.json] --> E
-    C[screenshots] --> E
-    D[run_id] --> E
+    subgraph I[Inputs]
+        ER[evaluation_results.jsonl\nquestion / answer / status\ncontract_pass / review flag]
+        VG[visual_graph.json\nentity nodes / relation edges\nmetrics / graph summary]
+        SS[screenshot assets\nvisual inspector / overview\nCLI workflow]
+        RID[run_id\nversioned evaluation run]
+    end
 
-    E --> I[00_Index.md\ndashboard / hotlist / query examples]
-    E --> R[01_Runs\nrun notes]
-    E --> Q[02_Evaluation/questions\nquestion notes]
-    E --> V[03_Review_Queue\nreview candidates]
-    E --> N[04_Entities\nhuman-readable entity notes]
-    E --> O[05_Ontology\nconcept + relation notes]
-    E --> S[99_Assets\nscreenshot evidence]
+    subgraph CLI[wiki-export command]
+        WE[wiki-export\nobsidian_wiki_export.py]
+        PARSE[Parse rows + graph payload]
+        NORM[Normalize titles\nentity display names\nrelation labels]
+        FRONT[Write frontmatter\ntags / aliases / source paths]
+        LINK[Create backlinks\nquestion ↔ entity\nquestion ↔ relation\nreview queue ↔ question]
+        WE --> PARSE --> NORM --> FRONT --> LINK
+    end
 
-    Q --> N
-    Q --> O
-    V --> Q
-    I --> R
-    I --> Q
-    I --> N
+    subgraph V[OBYBK_RAG_Wiki vault]
+        IDX[00_Index.md\ndashboard / hotlist\nquery examples]
+        RUN[01_Runs/\nrun notes\nmetrics / artifact links]
+        Q[02_Evaluation/questions/\nquestion notes\nclaim / answer / evidence]
+        RQ[03_Review_Queue/\nrequires_review items\nreason / status]
+        ENT[04_Entities/\nstation / metric / source notes\nhuman-readable names]
+        ONT[05_Ontology/\nconcept notes\nrelation notes\nreview gate vocabulary]
+        AST[99_Assets/\nPNG / JPG / HTML screenshots]
+    end
+
+    ER --> WE
+    VG --> WE
+    SS --> WE
+    RID --> WE
+
+    LINK --> IDX
+    LINK --> RUN
+    LINK --> Q
+    LINK --> RQ
+    LINK --> ENT
+    LINK --> ONT
+    LINK --> AST
+
+    IDX --> RUN
+    IDX --> Q
+    IDX --> RQ
+    IDX --> ENT
+    IDX --> ONT
+
+    Q -->|mentions| ENT
+    Q -->|uses relation| ONT
+    Q -->|if requires_review| RQ
+    RQ -->|review target| Q
+    RUN -->|run contains| Q
+    RUN -->|assets| AST
+    ENT -->|backlinks| Q
+    ONT -->|relation backlinks| Q
