@@ -204,17 +204,71 @@ CREATE INDEX IF NOT EXISTS idx_agent_snippets_tags ON agent_snippets(tags);
 
 DB_TABLES = ["rag_runs", "rag_artifacts", "rag_evaluation_questions", "review_queue", "agent_snippets"]
 
+DEMO_RUNTIME_ROWS: list[dict[str, Any]] = [
+    {
+        "id": "DEMO-001",
+        "question": "오늘 먼저 확인해야 할 대상은?",
+        "answer": "충무로역 3.4호선 ST-152를 우선 확인합니다.",
+        "evidence_documents": ["sample_data/rag_visual_inspector/sample_eval_results.jsonl"],
+        "related_objects": [
+            {"type": "Station", "id": "station:152", "label": "충무로역 3.4호선", "station_name": "충무로역 3.4호선"},
+            {"type": "Metric", "id": "metric:morning-shortage", "label": "아침 공급 부족 후보"},
+        ],
+        "related_relations": [
+            {"source": "metric:morning-shortage", "relation": "forStation", "target": "station:152"},
+            {"source": "ReviewGate", "relation": "requiresReview", "target": "station:152"},
+        ],
+        "recommended_actions": [
+            {"target": "station:152", "action": "심야 반납 집중과 아침 공급 부족 패턴 확인", "reason": "demo evidence graph candidate", "requires_human_approval": True}
+        ],
+        "requires_review": True,
+        "graph_metrics": {"entity_sample_preview": ["station:152"], "relation_count": 2},
+    },
+    {
+        "id": "DEMO-002",
+        "question": "BMO anchor는 왜 필요한가?",
+        "answer": "최상위 ontology axis가 LLM 임의 분류가 아니라 Business Model Ontology 논문에서 출발했음을 보입니다.",
+        "evidence_documents": ["docs/project/business_model_ontology_owl2dl_formalization_blueprint.md"],
+        "related_objects": [
+            {"type": "Concept", "id": "BusinessModelOntology", "label": "Business Model Ontology"},
+            {"type": "Artifact", "id": "OWL2DLBlueprint", "label": "OWL 2 DL-style blueprint"},
+        ],
+        "related_relations": [
+            {"source": "BusinessModelOntology", "relation": "hasEvidence", "target": "OWL2DLBlueprint"},
+            {"source": "OWL2DLBlueprint", "relation": "usesDataset", "target": "UpperOntologySeed"},
+        ],
+        "recommended_actions": [],
+        "requires_review": False,
+        "graph_metrics": {"relation_count": 2},
+    },
+]
 
-def _runtime_rows(runtime_answers: Path) -> dict[str, dict[str, Any]]:
-    return {str(row.get("id") or row.get("question_id")): row for row in read_jsonl(runtime_answers)}
+DEMO_SEED_ROWS: list[dict[str, Any]] = [
+    {
+        "id": "DEMO-001",
+        "content": "오늘 먼저 확인해야 할 대상은 충무로역 3.4호선 ST-152입니다. 심야 반납 집중과 아침 공급 부족 패턴을 review gate로 확인합니다.",
+        "metadata": {"source": "demo_fixture", "requires_review": True},
+        "embedding": [],
+    },
+    {
+        "id": "DEMO-002",
+        "content": "BMO anchor는 Business Model Ontology paper, OWL 2 DL-style blueprint, upper ontology seed를 연결해 LLM 임의 분류가 아님을 보여줍니다.",
+        "metadata": {"source": "demo_fixture", "requires_review": False},
+        "embedding": [],
+    },
+]
+
+
+def _runtime_rows(runtime_answers: Path | None) -> dict[str, dict[str, Any]]:
+    rows = read_jsonl(runtime_answers) if runtime_answers else DEMO_RUNTIME_ROWS
+    return {str(row.get("id") or row.get("question_id")): row for row in rows}
 
 
 def _load_seed_rows(args: argparse.Namespace) -> list[dict[str, Any]]:
     if getattr(args, "retriever", "local") == "pgvector":
         return []
-    if not getattr(args, "pgvector_seed", None):
-        raise ValueError("--pgvector-seed is required when --retriever local")
-    return read_jsonl(args.pgvector_seed)
+    seed_path = getattr(args, "pgvector_seed", None)
+    return read_jsonl(seed_path) if seed_path else DEMO_SEED_ROWS
 
 
 def _retrieved_contexts(args: argparse.Namespace, question: str) -> tuple[list[dict[str, Any]] | None, float | None]:
@@ -257,14 +311,41 @@ def _decorate_answer_with_entity_links(text: str, payload: dict[str, Any], index
     return decorated
 
 
-def _print_answer(payload: dict[str, Any], *, visual_index_html: Path | None = None) -> None:
+def _brief_answer_text(answer: str) -> str:
+    text = str(answer or "").strip()
+    if "## 답변" not in text:
+        return text
+    lines = text.splitlines()
+    collected: list[str] = []
+    active = False
+    for line in lines:
+        if line.strip() == "## 답변":
+            active = True
+            continue
+        if active and line.startswith("## "):
+            break
+        if active:
+            collected.append(line)
+    brief = "\n".join(collected).strip()
+    return brief or text
+
+
+def _print_answer(payload: dict[str, Any], *, visual_index_html: Path | None = None, verbose: bool = False) -> None:
     print("\n[질의]\n")
     question = payload.get("question") or payload.get("input_question") or ""
     if question:
         print(question)
 
     print("\n[답변 — entity 이름은 Ctrl+Click 가능]\n" if visual_index_html else "\n[답변]\n")
-    print(_decorate_answer_with_entity_links(str(payload.get("answer", "")), payload, visual_index_html))
+    answer_text = str(payload.get("answer", "")) if verbose else _brief_answer_text(str(payload.get("answer", "")))
+    print(_decorate_answer_with_entity_links(answer_text, payload, visual_index_html))
+
+    if not verbose:
+        if payload.get("requires_review"):
+            reason = str(payload.get("review_reason") or "사람 검토가 필요한 항목입니다.").strip()
+            print("\n[검토 필요]\n")
+            print(reason)
+        return
 
     candidates = payload.get("candidate_set") or []
     if candidates:
@@ -586,11 +667,19 @@ def _print_visual_click_links(payload: dict[str, Any], artifacts: dict[str, Any]
     print(f"\n[artifact dir] {index_html.parent}")
 
 
+def _question_from_args(args: argparse.Namespace) -> str:
+    question = str(getattr(args, "question", "") or getattr(args, "question_text", "") or "").strip()
+    if not question:
+        raise ValueError("질문을 입력하세요. 예: ask \"오늘 먼저 확인해야 할 대상은?\" --offline")
+    return question
+
+
 def ask(args: argparse.Namespace) -> int:
+    question = _question_from_args(args)
     llm_callable = _offline_llm if args.offline else None
-    retrieved_contexts, retrieval_latency_ms = _retrieved_contexts(args, args.question)
+    retrieved_contexts, retrieval_latency_ms = _retrieved_contexts(args, question)
     payload = generate_rag_llm_answer(
-        question=args.question,
+        question=question,
         runtime_rows=_runtime_rows(args.runtime_answers),
         seed_rows=_load_seed_rows(args),
         top_k=args.top_k,
@@ -631,7 +720,7 @@ def ask(args: argparse.Namespace) -> int:
         print(json.dumps(payload, ensure_ascii=False, indent=2))
     else:
         visual_index = Path(str(visual_click_artifacts["index_html"])) if visual_click_artifacts else None
-        _print_answer(payload, visual_index_html=visual_index)
+        _print_answer(payload, visual_index_html=visual_index, verbose=args.verbose)
         if visual_click_artifacts:
             _print_visual_click_links(payload, visual_click_artifacts, terminal_links=True)
         if args.inspect:
@@ -1100,6 +1189,12 @@ CLI_EXAMPLE_COLUMNS = ("workflow", "command", "purpose", "save_as")
 
 def build_cli_example_rows() -> list[dict[str, str]]:
     return [
+        {
+            "workflow": "Ask like a chatbot",
+            "command": "python tools/scripts/rag/general_rag_cli.py ask \"오늘 먼저 확인해야 할 대상은?\" --offline",
+            "purpose": "Ask one question with the built-in demo fixture; no DB or long flags required.",
+            "save_as": "Terminal answer",
+        },
         {
             "workflow": "Inspect domain directory",
             "command": "python tools/scripts/rag/general_rag_cli.py inspect-dir --domain-dir sample_data/rag_visual_inspector --output artifacts/domain_manifest.json --json",
@@ -1600,8 +1695,8 @@ def snippet_delete(args: argparse.Namespace) -> int:
 
 
 def add_common(parser: argparse.ArgumentParser) -> None:
-    parser.add_argument("--runtime-answers", required=True, type=Path, help="GraphRAG/runtime answer JSONL path")
-    parser.add_argument("--pgvector-seed", type=Path, help="pgvector seed JSONL path. Required for --retriever local and report.")
+    parser.add_argument("--runtime-answers", type=Path, help="GraphRAG/runtime answer JSONL path. If omitted, ask/chat use a built-in demo fixture.")
+    parser.add_argument("--pgvector-seed", type=Path, help="pgvector seed JSONL path. If omitted, ask/chat use a built-in demo fixture.")
     parser.add_argument("--retriever", choices=["local", "pgvector"], default="local", help="Retrieval backend for ask/chat/visual")
     parser.add_argument("--dsn", default=os.environ.get("DATABASE_URL", ""), help="PostgreSQL DSN for --retriever pgvector")
     parser.add_argument("--pgvector-table", default="obybk_rag_documents", help="PostgreSQL pgvector table name")
@@ -1748,7 +1843,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     ask_parser = subparsers.add_parser("ask", help="Ask one question and print a grounded RAG answer.")
     add_common(ask_parser)
-    ask_parser.add_argument("--question", required=True)
+    ask_parser.add_argument("question_text", nargs="?", help="Question text. Example: ask \"오늘 먼저 확인해야 할 대상은?\" --offline")
+    ask_parser.add_argument("--question", help="Question text, equivalent to the positional argument")
     ask_parser.add_argument("--category", help="Optional question category used by AnswerProfile intent routing.")
     ask_parser.add_argument("--inspect", action="store_true", help="Print a browserless terminal entity inspector after the answer")
     ask_parser.add_argument("--inspect-entity", help="Entity number/id to focus in the terminal inspector popup")
@@ -1759,6 +1855,7 @@ def build_parser() -> argparse.ArgumentParser:
     ask_parser.add_argument("--open-visual", action="store_true", help="Open the clickable ontology visual index in the default browser")
     ask_parser.add_argument("--open-visual-app", action="store_true", help="Open the visual index in app/window mode without tabs or address bar when supported")
     ask_parser.add_argument("--terminal-links", action="store_true", help="Render OSC-8 terminal hyperlinks for entity labels")
+    ask_parser.add_argument("--verbose", action="store_true", help="Show candidates, metrics, gaps, excerpts, and execution metadata")
     ask_parser.add_argument("--json", action="store_true")
     ask_parser.set_defaults(func=ask)
 

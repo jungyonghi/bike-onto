@@ -317,6 +317,15 @@ def test_general_rag_cli_snippet_store_roundtrip(tmp_path: Path) -> None:
     assert list_payload["snippets"][0][0] == "rag.snippet.template"
 
 
+def test_general_rag_cli_ask_positional_question_uses_demo_fixture_without_long_flags() -> None:
+    result = _run_cli(["ask", "오늘 먼저 확인해야 할 대상은?", "--offline"])
+
+    assert "[질의]" in result.stdout
+    assert "[답변]" in result.stdout
+    assert "충무로역" in result.stdout
+    assert "[정량 지표]" not in result.stdout
+
+
 def test_general_rag_cli_ask_outputs_grounded_answer_json(tmp_path: Path) -> None:
     runtime_answers = tmp_path / "runtime.jsonl"
     _write_runtime_answers(runtime_answers)
@@ -643,4 +652,4 @@ def test_general_rag_cli_chat_accepts_stdin_question(tmp_path: Path) -> None:
 
     assert "질문>" in result.stdout
     assert "[답변]" in result.stdout
-    assert "[후보]" in result.stdout
+    assert "[검토 필요]" in result.stdout

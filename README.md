@@ -72,7 +72,7 @@ OBYBK는 다음 문제를 해결합니다.
 | Evaluation | reference snapshot: domain-specific benchmark policy + Seoul Bike 100 QA case-study snapshot |
 | Obsidian projection | prototype implemented: run/question/entity/relation/review notes with backlinks |
 | Retrieval store | local/prototype adapter: SQLite handoff + PostgreSQL/pgvector adapter |
-| Tests | `183 passed, 3 warnings` on packaged fixtures and smoke/regression tests |
+| Tests | `184 passed, 3 warnings` on packaged fixtures and smoke/regression tests |
 | Not claimed | production deployment, managed service, complete domain DB reproduction, full OWL reasoner runtime, complete OWL validation pipeline, independent human evaluation |
 
 ---
@@ -562,6 +562,18 @@ DB-only RAG와 Ontology-Hybrid inspection profile을 20문항으로 비교했습
 
 ## Getting Started
 
+가장 짧은 사용 경로는 일반 챗봇처럼 질문을 바로 던지는 방식입니다. 긴 `--runtime-answers`, `--pgvector-seed` 옵션은 custom artifact를 붙일 때만 필요합니다.
+
+```bash
+python tools/scripts/rag/general_rag_cli.py ask "오늘 먼저 확인해야 할 대상은?" --offline
+```
+
+상세 후보, metric, data gap, excerpt까지 보고 싶으면 `--verbose`를 붙입니다.
+
+```bash
+python tools/scripts/rag/general_rag_cli.py ask "오늘 먼저 확인해야 할 대상은?" --offline --verbose
+```
+
 ### Prerequisites
 
 - Python 3.10+
@@ -610,7 +622,7 @@ PS C:\Projects\obybk> .\tools\scripts\rag\demo_wizard.ps1 -Yes
 
 ## CLI Commands
 
-CLI 예시는 README뿐 아니라 Markdown/CSV로 저장할 수 있습니다.
+CLI 예시는 일반 사용자용 짧은 질의부터 artifact export까지 나누어 제공합니다. README뿐 아니라 Markdown/CSV로 저장할 수 있습니다.
 
 <details>
 <summary>CLI examples export command</summary>
@@ -714,7 +726,7 @@ venv/bin/python -m pytest tools/tests -q
 Current result:
 
 ```text
-183 passed, 3 warnings
+184 passed, 3 warnings
 ```
 
 ---
