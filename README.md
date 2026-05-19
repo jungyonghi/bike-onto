@@ -1,6 +1,6 @@
 # Bike Onto
 
-**OBYBK — Portfolio prototype for a CLI-first RAG Inspection Framework with Ontology-Hybrid Evidence Graphs**
+**OBYBK — Portfolio prototype for a CLI-first RAG Inspection Framework with a Pi agent extension interface**
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-000000?style=flat-square&logo=python&logoColor=white&labelColor=000000" alt="Python">
@@ -13,7 +13,7 @@
 
 > **RAG finds evidence. OBYBK makes the answer inspectable.**
 
-OBYBK는 RAG 답변을 단순 자연어 텍스트로 끝내지 않고, **claim, evidence, entity, relation, review gate**로 분해해 사람이 검토할 수 있는 산출물로 남기는 CLI-first framework prototype입니다.
+OBYBK는 RAG 답변을 단순 자연어 텍스트로 끝내지 않고, **claim, evidence, entity, relation, review gate**로 분해해 사람이 검토할 수 있는 산출물로 남기는 CLI-first framework prototype입니다. CLI는 stable backend로 유지하고, Pi agent extension은 이 inspection workflow를 기존 agent harness 안에서 도구처럼 호출하는 interface입니다.
 
 서울 공공 모빌리티 데이터는 이 프레임워크를 검증하기 위한 **case-study binding**입니다. 프로젝트의 중심은 특정 서비스 분석기가 아니라, 어떤 도메인 데이터라도 RAG 답변을 검증 가능한 evidence graph로 바꾸는 방법입니다.
 
@@ -21,7 +21,8 @@ OBYBK는 RAG 답변을 단순 자연어 텍스트로 끝내지 않고, **claim, 
 
 ```mermaid
 flowchart LR
-    A[Domain artifacts] --> B[CLI inspection]
+    A[Domain artifacts] --> B[CLI inspection core]
+    P[Pi agent extension / tool calls] --> B
     B --> C[RAG answer payload]
     C --> D[Claim / Evidence / Entity / Relation]
     D --> E[Review gate]
@@ -42,7 +43,7 @@ flowchart LR
 OBYBK는 다음 문제를 해결합니다.
 
 ```text
-질문 → 검색/RAG 답변 → 근거 구조화 → 시각 검사 → 평가 요약 → 위키/DB 저장
+질문 → Pi agent/CLI 호출 → 검색/RAG 답변 → 근거 구조화 → 시각 검사 → 평가 요약 → 위키/DB 저장
 ```
 
 핵심 구현:
@@ -67,7 +68,8 @@ OBYBK는 다음 문제를 해결합니다.
 
 | Area | Status |
 |---|---|
-| CLI workflow | prototype implemented: first-run `setup`, zero-arg `./bike` chat, Pi agent extension commands/tools, `inspect-dir`, `ask`, `chat`, `visual`, `visual-eval`, `wiki-export`, `ontology-map` |
+| CLI workflow | prototype implemented: first-run `setup`, zero-arg `./bike` chat, `inspect-dir`, `ask`, `chat`, `visual`, `visual-eval`, `wiki-export`, `ontology-map` |
+| Pi agent extension | prototype implemented: project-local `.pi/extensions/bike-onto`, `/bike-*` commands, LLM-callable inspection tools |
 | RAG inspection payload | prototype implemented: claim, evidence, entity, relation, review gate decomposition |
 | Ontology seed anchor | documented/implemented as BMO-based blueprint + reusable upper ontology seed generator |
 | Visual workflow | prototype implemented: clickable CLI links, ontology tree/radial page, app-window mode |
@@ -564,7 +566,11 @@ DB-only RAG와 Ontology-Hybrid inspection profile을 20문항으로 비교했습
 
 ## Getting Started
 
-기본 UX는 **첫 실행 setup → 이후 인자 없는 chat** 입니다. 긴 `--runtime-answers`, `--pgvector-seed` 옵션은 custom artifact를 붙일 때만 필요합니다.
+기본 UX는 **Pi agent extension에서 자연어로 요청하거나, CLI에서는 첫 실행 setup 후 인자 없는 chat으로 들어가는 방식**입니다. 긴 `--runtime-answers`, `--pgvector-seed` 옵션은 custom artifact를 붙일 때만 필요합니다.
+
+- 추천 경로: `pi` 안에서 Bike Onto extension tools 사용
+- 직접 실행 경로: `./bike setup` 후 `./bike`
+- 고급/재현 경로: 기존 CLI command와 JSON artifact 사용
 
 <details>
 <summary>Minimal setup + chat</summary>
@@ -595,6 +601,10 @@ Project-local extension은 `.pi/extensions/bike-onto/index.ts`에 있으며, rep
 
 중요하게, extension은 방법론을 바꾸지 않습니다. 기존 CLI-first inspection core를 그대로 호출하는 adapter입니다.
 즉, BMO-anchored ontology seed, claim/evidence/entity/relation/review gate 분해, Visual Inspector, Wiki Export 흐름은 유지됩니다.
+
+```text
+Pi prompt → extension tool → ./bike CLI core → inspection artifact → Pi answer
+```
 
 <details>
 <summary>Pi agent에서 사용하는 방법</summary>
@@ -779,6 +789,8 @@ PS C:\Projects\obybk> .\venv\Scripts\python.exe tools\scripts\rag\general_rag_cl
 ```text
 obybk/
 ├── README.md
+├── bike / bike.ps1
+├── .pi/extensions/bike-onto/index.ts
 ├── requirements.txt
 ├── requirements-dev.txt
 ├── sample_data/rag_visual_inspector/
@@ -832,6 +844,7 @@ Current result:
 - live pgvector retrieval은 PostgreSQL/pgvector DSN과 seed table이 필요합니다.
 - domain-specific entity resolver와 relation mapping은 도메인마다 보강해야 합니다.
 - 현재 performance snapshot은 LLM judge 기반의 소규모 diagnostic evaluation이며, 독립 human evaluation과 multi-domain benchmark는 향후 과제입니다.
+- Pi agent extension은 현재 project-local adapter이며, 독립 배포용 package나 full MCP server 구현은 향후 과제입니다.
 - 대용량 원자료와 local credentials는 repository에 포함하지 않습니다.
 
 ---
