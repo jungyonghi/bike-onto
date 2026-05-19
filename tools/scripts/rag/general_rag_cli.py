@@ -1458,6 +1458,12 @@ def build_cli_example_rows() -> list[dict[str, str]]:
             "save_as": "Terminal chat",
         },
         {
+            "workflow": "Pi extension",
+            "command": "pi  # project-local .pi/extensions/bike-onto auto-loads; then run /bike-setup or /bike-tools",
+            "purpose": "Use Bike Onto as a Pi extension with LLM-callable RAG inspection tools.",
+            "save_as": "Agent harness tools",
+        },
+        {
             "workflow": "Inspect domain directory",
             "command": "./bike inspect-dir --domain-dir sample_data/rag_visual_inspector --output artifacts/domain_manifest.json --json",
             "purpose": "Resolve runnable artifact paths from a fragmented domain folder.",

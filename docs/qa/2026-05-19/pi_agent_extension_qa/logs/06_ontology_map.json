@@ -1,0 +1,10 @@
+{
+  "output": "/home/user/Documents/01_Projects/01_Active/bike-onto/docs/qa/2026-05-19/pi_agent_extension_qa/artifacts/ontology/ontology_map.png",
+  "graph_json": "/home/user/Documents/01_Projects/01_Active/bike-onto/docs/qa/2026-05-19/pi_agent_extension_qa/artifacts/ontology/ontology_map.json",
+  "node_count": 40,
+  "edge_count": 55,
+  "entity_node_count": 0,
+  "focused_entity": "",
+  "kind": "nodeprompt_inspired_ontology_map",
+  "preview": "/home/user/Documents/01_Projects/01_Active/bike-onto/docs/qa/2026-05-19/pi_agent_extension_qa/artifacts/ontology/ontology_map_preview.jpg"
+}

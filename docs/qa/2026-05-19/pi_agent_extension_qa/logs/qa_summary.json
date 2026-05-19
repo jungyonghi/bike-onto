@@ -1,0 +1,133 @@
+{
+  "timestamp": "2026-05-19T18:55:29.285608+00:00",
+  "branch": "feat/pi-extension",
+  "commit": "382095e",
+  "qa_home": "/tmp/bike_onto_pi_agent_extension_qa_home",
+  "output_dir": "docs/qa/2026-05-19/pi_agent_extension_qa",
+  "results": [
+    {
+      "case_id": "QA-001",
+      "description": "First-run setup creates local offline config",
+      "command": "./bike setup --yes --offline --json",
+      "status": "PASS",
+      "returncode": 0,
+      "log": "docs/qa/2026-05-19/pi_agent_extension_qa/logs/01_setup.json",
+      "started": "2026-05-19T18:54:29.001077+00:00",
+      "ended": "2026-05-19T18:54:29.289903+00:00"
+    },
+    {
+      "case_id": "QA-002",
+      "description": "Status reports local setup without secrets",
+      "command": "./bike status --json",
+      "status": "PASS",
+      "returncode": 0,
+      "log": "docs/qa/2026-05-19/pi_agent_extension_qa/logs/02_status.json",
+      "started": "2026-05-19T18:54:29.290467+00:00",
+      "ended": "2026-05-19T18:54:29.565404+00:00"
+    },
+    {
+      "case_id": "QA-003",
+      "description": "Zero-argument chat accepts stdin question",
+      "command": "./bike",
+      "status": "PASS",
+      "returncode": 0,
+      "log": "docs/qa/2026-05-19/pi_agent_extension_qa/logs/03_zero_arg_chat.txt",
+      "started": "2026-05-19T18:54:29.565902+00:00",
+      "ended": "2026-05-19T18:54:29.873538+00:00"
+    },
+    {
+      "case_id": "QA-004",
+      "description": "One-shot JSON answer contract",
+      "command": "./bike ask '오늘 먼저 확인해야 할 대상은?' --json",
+      "status": "PASS",
+      "returncode": 0,
+      "log": "docs/qa/2026-05-19/pi_agent_extension_qa/logs/04_ask_answer.json",
+      "started": "2026-05-19T18:54:29.873959+00:00",
+      "ended": "2026-05-19T18:54:30.183740+00:00"
+    },
+    {
+      "case_id": "QA-005",
+      "description": "Visual Inspector artifact generation",
+      "command": "./bike visual --question '오늘 먼저 확인해야 할 대상은?' --output /home/user/Documents/01_Projects/01_Active/bike-onto/docs/qa/2026-05-19/pi_agent_extension_qa/artifacts/visual/answer_visual.html --graph-json /home/user/Documents/01_Projects/01_Active/bike-onto/docs/qa/2026-05-19/pi_agent_extension_qa/artifacts/visual/answer_visual_graph.json --json",
+      "status": "PASS",
+      "returncode": 0,
+      "log": "docs/qa/2026-05-19/pi_agent_extension_qa/logs/05_visual.json",
+      "started": "2026-05-19T18:54:30.185007+00:00",
+      "ended": "2026-05-19T18:54:30.509021+00:00"
+    },
+    {
+      "case_id": "QA-006",
+      "description": "NODEPROMPT-inspired ontology map generation",
+      "command": "./bike ontology-map --output /home/user/Documents/01_Projects/01_Active/bike-onto/docs/qa/2026-05-19/pi_agent_extension_qa/artifacts/ontology/ontology_map.png --preview /home/user/Documents/01_Projects/01_Active/bike-onto/docs/qa/2026-05-19/pi_agent_extension_qa/artifacts/ontology/ontology_map_preview.jpg --graph-json /home/user/Documents/01_Projects/01_Active/bike-onto/docs/qa/2026-05-19/pi_agent_extension_qa/artifacts/ontology/ontology_map.json --json",
+      "status": "PASS",
+      "returncode": 0,
+      "log": "docs/qa/2026-05-19/pi_agent_extension_qa/logs/06_ontology_map.json",
+      "started": "2026-05-19T18:54:30.509605+00:00",
+      "ended": "2026-05-19T18:54:31.040058+00:00"
+    },
+    {
+      "case_id": "QA-007",
+      "description": "Obsidian ontology-like wiki export",
+      "command": "./bike wiki-export --results-jsonl sample_data/rag_visual_inspector/sample_eval_results.jsonl --graph-json sample_data/rag_visual_inspector/sample_visual_graph.json --vault /home/user/Documents/01_Projects/01_Active/bike-onto/docs/qa/2026-05-19/pi_agent_extension_qa/artifacts/wiki/OBYBK_RAG_Wiki --run-id pi_ext_qa_run --json",
+      "status": "PASS",
+      "returncode": 0,
+      "log": "docs/qa/2026-05-19/pi_agent_extension_qa/logs/07_wiki_export.json",
+      "started": "2026-05-19T18:54:31.040620+00:00",
+      "ended": "2026-05-19T18:54:31.329153+00:00"
+    },
+    {
+      "case_id": "QA-008",
+      "description": "Pi extension static registration tests",
+      "command": "/home/user/Documents/01_Projects/01_Active/obybk/venv/bin/python -m pytest tools/tests/test_pi_extension.py -q",
+      "status": "PASS",
+      "returncode": 0,
+      "log": "docs/qa/2026-05-19/pi_agent_extension_qa/logs/08_pytest_pi_extension.txt",
+      "started": "2026-05-19T18:54:31.329664+00:00",
+      "ended": "2026-05-19T18:54:31.632143+00:00"
+    },
+    {
+      "case_id": "QA-009",
+      "description": "Full regression test suite",
+      "command": "/home/user/Documents/01_Projects/01_Active/obybk/venv/bin/python -m pytest tools/tests -q",
+      "status": "PASS",
+      "returncode": 0,
+      "log": "docs/qa/2026-05-19/pi_agent_extension_qa/logs/09_pytest_full.txt",
+      "started": "2026-05-19T18:54:31.632586+00:00",
+      "ended": "2026-05-19T18:55:29.280152+00:00"
+    },
+    {
+      "case_id": "QA-010",
+      "description": "README image/keyword and targeted secret check",
+      "command": "python inline readme/secret check",
+      "status": "PASS",
+      "returncode": 0,
+      "log": "docs/qa/2026-05-19/pi_agent_extension_qa/logs/10_readme_secret_check.json",
+      "started": "2026-05-19T18:55:29.284993+00:00",
+      "ended": "2026-05-19T18:55:29.285010+00:00"
+    }
+  ],
+  "artifact_checks": {
+    "visual_html": true,
+    "visual_graph_json": true,
+    "ontology_png": true,
+    "ontology_preview_jpg": true,
+    "ontology_json": true,
+    "wiki_index": true
+  },
+  "artifact_sizes": {
+    "visual_html": 53489,
+    "visual_graph_json": 31988,
+    "ontology_png": 252489,
+    "ontology_preview_jpg": 228314,
+    "ontology_json": 16585,
+    "wiki_index": 2078
+  },
+  "readme_check": {
+    "missing_images": [],
+    "bad_keywords": {},
+    "targeted_secret_hits": {},
+    "pi_extension_mode_documented": true,
+    "adapter_note_documented": true
+  },
+  "overall_status": "PASS"
+}

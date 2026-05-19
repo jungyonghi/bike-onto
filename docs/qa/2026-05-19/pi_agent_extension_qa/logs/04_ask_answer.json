@@ -1,0 +1,293 @@
+{
+  "mode": "rag_llm",
+  "question": "오늘 먼저 확인해야 할 대상은?",
+  "answer": "## 답변\n운영자는 충무로역 3.4호선 (ST-152)를 먼저 확인해야 합니다. 이 대상들은 현재 근거에서 이상 징후 또는 운영 점검 후보로 잡히므로 장애 신고, 최근 변화, 데이터 누락 여부를 함께 확인하는 것이 적절합니다.\n\n## 근거 기반 판단\n- 관련 운영·지표·추천 정보가 확인되지만, 원인과 우선순위는 별도 지표로 검증해야 합니다.\n- 관련 객체는 충무로역 3.4호선 (ST-152)로 확인되며, 이 목록은 우선 검토 대상 후보입니다.\n- 관련 관계 항목은 대상 대여소, 검토 필요, 근거, 사용 데이터셋입니다. 관계의 강도나 우선순위는 별도 지표로 검증해야 합니다.\n\n## 권장 조치\n- 대상: 충무로역 3.4호선 (ST-152)\n- 조치: 심야 반납 집중과 아침 공급 부족 패턴 확인\n- 이유: demo evidence graph candidate\n- 승인 필요 여부: 사람 검토 필요\n\n## 추가 확인 필요\n- 우선 확인 대상의 최근 상태와 이상 징후 후보\n- 장애 신고, 정비 이력, 데이터 누락 여부\n- 운영자가 즉시 조치할 수 있는 범위와 승인 필요 범위\n\n## 답변 한계\n현재 context만으로는 원인, 우선순위, 실행 결과를 확정할 수 없습니다. 위 판단은 우선 확인 후보로 제한됩니다.",
+  "key_findings": [
+    {
+      "claim": "검색 근거를 사용자 조치 중심 답변으로 변환했습니다.",
+      "basis": "answer_composer",
+      "confidence": "medium"
+    }
+  ],
+  "answerability": "executable-with-data",
+  "answer_policy": {
+    "answerability": "executable-with-data",
+    "requires_review": false,
+    "review_reason": "",
+    "task_type": "general",
+    "risk_signals": [],
+    "required_parameters": []
+  },
+  "candidate_set": [
+    {
+      "candidate_id": "station:152",
+      "rank": 1,
+      "source_metric": "entity_sample_preview",
+      "source_id": "DEMO-001",
+      "score": null,
+      "note": "preview candidate from graph/runtime metrics; score is not available in current context"
+    }
+  ],
+  "quantitative_indicators": [
+    {
+      "metric": "retrieved_context_count",
+      "value": 2,
+      "source": "retrieval"
+    },
+    {
+      "metric": "evidence_document_count",
+      "value": 2,
+      "source": "runtime_context"
+    },
+    {
+      "metric": "related_object_count",
+      "value": 4,
+      "source": "runtime_context"
+    },
+    {
+      "metric": "related_relation_count",
+      "value": 4,
+      "source": "runtime_context"
+    },
+    {
+      "metric": "recommended_action_count",
+      "value": 1,
+      "source": "primary_context"
+    },
+    {
+      "metric": "top1_retrieval_score",
+      "value": 4.0,
+      "source": "DEMO-001"
+    },
+    {
+      "metric": "top1_token_overlap",
+      "value": 4,
+      "source": "DEMO-001"
+    },
+    {
+      "metric": "top2_retrieval_score",
+      "value": 0.0,
+      "source": "DEMO-002"
+    },
+    {
+      "metric": "top2_token_overlap",
+      "value": 0,
+      "source": "DEMO-002"
+    },
+    {
+      "metric": "relation_count:forStation",
+      "value": 1,
+      "source": "related_relations"
+    },
+    {
+      "metric": "relation_count:hasEvidence",
+      "value": 1,
+      "source": "related_relations"
+    },
+    {
+      "metric": "relation_count:requiresReview",
+      "value": 1,
+      "source": "related_relations"
+    },
+    {
+      "metric": "relation_count:usesDataset",
+      "value": 1,
+      "source": "related_relations"
+    },
+    {
+      "metric": "relation_count",
+      "value": 2,
+      "source": "DEMO-001"
+    },
+    {
+      "metric": "relation_count",
+      "value": 2,
+      "source": "DEMO-002"
+    }
+  ],
+  "entity_cards": [
+    {
+      "type": "Station",
+      "id": "station:152",
+      "label": "충무로역 3.4호선",
+      "attributes": {
+        "station_name": "충무로역 3.4호선"
+      },
+      "display_attributes": {
+        "station_name": "충무로역 3.4호선"
+      },
+      "detail_status": "resolved",
+      "missing_detail_notes": []
+    },
+    {
+      "type": "Metric",
+      "id": "metric:morning-shortage",
+      "label": "아침 공급 부족 후보",
+      "attributes": {},
+      "display_attributes": {},
+      "detail_status": "minimal",
+      "missing_detail_notes": [
+        "location/address/detail attributes not present in current RAG context"
+      ]
+    },
+    {
+      "type": "Concept",
+      "id": "BusinessModelOntology",
+      "label": "Business Model Ontology",
+      "attributes": {},
+      "display_attributes": {},
+      "detail_status": "minimal",
+      "missing_detail_notes": [
+        "location/address/detail attributes not present in current RAG context"
+      ]
+    },
+    {
+      "type": "Artifact",
+      "id": "OWL2DLBlueprint",
+      "label": "OWL 2 DL-style blueprint",
+      "attributes": {},
+      "display_attributes": {},
+      "detail_status": "minimal",
+      "missing_detail_notes": [
+        "location/address/detail attributes not present in current RAG context"
+      ]
+    }
+  ],
+  "data_gaps": [
+    "metric:morning-shortage has no detailed location/address attributes in current context.",
+    "BusinessModelOntology has no detailed location/address attributes in current context.",
+    "OWL2DLBlueprint has no detailed location/address attributes in current context.",
+    "Candidate identifiers are available, but explicit ranking/score values are not available in current context."
+  ],
+  "evidence_excerpt_list": [
+    {
+      "source": "DEMO-001",
+      "kind": "retrieved_context",
+      "score": 4.0,
+      "excerpt": "오늘 먼저 확인해야 할 대상은 충무로역 3.4호선 ST-152입니다. 심야 반납 집중과 아침 공급 부족 패턴을 review gate로 확인합니다."
+    },
+    {
+      "source": "DEMO-002",
+      "kind": "retrieved_context",
+      "score": 0.0,
+      "excerpt": "BMO anchor는 Business Model Ontology paper, OWL 2 DL-style blueprint, upper ontology seed를 연결해 LLM 임의 분류가 아님을 보여줍니다."
+    },
+    {
+      "source": "sample_data/rag_visual_inspector/sample_eval_results.jsonl",
+      "kind": "evidence_document",
+      "score": null,
+      "excerpt": "file path only; quote extraction not available in current context"
+    },
+    {
+      "source": "docs/project/business_model_ontology_owl2dl_formalization_blueprint.md",
+      "kind": "evidence_document",
+      "score": null,
+      "excerpt": "file path only; quote extraction not available in current context"
+    }
+  ],
+  "evidence_documents": [
+    "sample_data/rag_visual_inspector/sample_eval_results.jsonl",
+    "docs/project/business_model_ontology_owl2dl_formalization_blueprint.md"
+  ],
+  "related_objects": [
+    {
+      "type": "Station",
+      "id": "station:152",
+      "label": "충무로역 3.4호선",
+      "station_name": "충무로역 3.4호선"
+    },
+    {
+      "type": "Metric",
+      "id": "metric:morning-shortage",
+      "label": "아침 공급 부족 후보"
+    },
+    {
+      "type": "Concept",
+      "id": "BusinessModelOntology",
+      "label": "Business Model Ontology"
+    },
+    {
+      "type": "Artifact",
+      "id": "OWL2DLBlueprint",
+      "label": "OWL 2 DL-style blueprint"
+    }
+  ],
+  "related_relations": [
+    {
+      "source": "metric:morning-shortage",
+      "relation": "forStation",
+      "target": "station:152"
+    },
+    {
+      "source": "ReviewGate",
+      "relation": "requiresReview",
+      "target": "station:152"
+    },
+    {
+      "source": "BusinessModelOntology",
+      "relation": "hasEvidence",
+      "target": "OWL2DLBlueprint"
+    },
+    {
+      "source": "OWL2DLBlueprint",
+      "relation": "usesDataset",
+      "target": "UpperOntologySeed"
+    }
+  ],
+  "recommended_actions": [
+    {
+      "target": "station:152",
+      "action": "심야 반납 집중과 아침 공급 부족 패턴 확인",
+      "reason": "demo evidence graph candidate",
+      "requires_human_approval": true
+    }
+  ],
+  "requires_review": true,
+  "review_reason": "추천/조치 또는 검토 플래그가 포함되어 사람 검토가 필요합니다.",
+  "uncertainty": "LLM live 호출 대신 Answer Composer fallback을 사용했습니다.",
+  "llm": {
+    "mode": "offline_cli",
+    "model": "offline-grounded",
+    "latency_ms": 0.0,
+    "usage": {}
+  },
+  "retrieval": {
+    "top_k": 3,
+    "latency_ms": 0.599,
+    "matches": [
+      {
+        "id": "DEMO-001",
+        "content": "오늘 먼저 확인해야 할 대상은 충무로역 3.4호선 ST-152입니다. 심야 반납 집중과 아침 공급 부족 패턴을 review gate로 확인합니다.",
+        "metadata": {
+          "source": "demo_fixture",
+          "requires_review": true
+        },
+        "score": 4.0,
+        "token_overlap": 4,
+        "vector_score": 0.0
+      },
+      {
+        "id": "DEMO-002",
+        "content": "BMO anchor는 Business Model Ontology paper, OWL 2 DL-style blueprint, upper ontology seed를 연결해 LLM 임의 분류가 아님을 보여줍니다.",
+        "metadata": {
+          "source": "demo_fixture",
+          "requires_review": false
+        },
+        "score": 0.0,
+        "token_overlap": 0,
+        "vector_score": 0.0
+      }
+    ],
+    "backend": "local"
+  },
+  "contract_checks": {
+    "has_answer": true,
+    "has_evidence_documents": true,
+    "has_related_objects": true,
+    "has_related_relations": true,
+    "has_review_boundary": true
+  },
+  "contract_pass": true,
+  "quality_guard_notes": [],
+  "raw_text": ""
+}

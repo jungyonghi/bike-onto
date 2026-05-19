@@ -1,0 +1,9 @@
+{
+  "html_path": "/home/user/Documents/01_Projects/01_Active/bike-onto/docs/qa/2026-05-19/pi_agent_extension_qa/artifacts/visual/answer_visual.html",
+  "graph_json_path": "/home/user/Documents/01_Projects/01_Active/bike-onto/docs/qa/2026-05-19/pi_agent_extension_qa/artifacts/visual/answer_visual_graph.json",
+  "node_count": 51,
+  "edge_count": 53,
+  "contract_pass": true,
+  "requires_review": true,
+  "llm_mode": "offline_cli"
+}
