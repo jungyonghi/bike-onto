@@ -1,0 +1,698 @@
+{
+  "kind": "nodeprompt_inspired_ontology_map",
+  "title": "OBYBK Ontology-Hybrid Evidence Graph",
+  "nodes": [
+    {
+      "id": "root",
+      "label": "OBYBK RAG Inspection",
+      "type": "framework",
+      "weight": 1.0,
+      "description": "RAG answers decomposed into claim, evidence, entity, relation, and review gates.",
+      "parent_id": null,
+      "depth": 0
+    },
+    {
+      "id": "claim",
+      "label": "Claim Graph",
+      "type": "claim",
+      "weight": 0.92,
+      "description": "답변을 검증 가능한 주장 단위로 분해합니다.",
+      "parent_id": "root",
+      "depth": 1
+    },
+    {
+      "id": "evidence",
+      "label": "Evidence Graph",
+      "type": "evidence",
+      "weight": 0.96,
+      "description": "검색 근거, 문서 출처, 후보군, provenance를 연결합니다.",
+      "parent_id": "root",
+      "depth": 1
+    },
+    {
+      "id": "ontology",
+      "label": "Ontology Anchors",
+      "type": "entity",
+      "weight": 0.88,
+      "description": "Business Model Ontology와 domain slice를 anchor로 사용합니다.",
+      "parent_id": "root",
+      "depth": 1
+    },
+    {
+      "id": "review",
+      "label": "Review Gates",
+      "type": "review",
+      "weight": 0.86,
+      "description": "사람 검토, 품질 guard, data gap을 명시합니다.",
+      "parent_id": "root",
+      "depth": 1
+    },
+    {
+      "id": "store",
+      "label": "RAG Store",
+      "type": "store",
+      "weight": 0.82,
+      "description": "Local JSONL/SQLite/PostgreSQL-pgvector 검색 저장소입니다.",
+      "parent_id": "root",
+      "depth": 1
+    },
+    {
+      "id": "projection",
+      "label": "Reviewer Projection",
+      "type": "projection",
+      "weight": 0.8,
+      "description": "Visual Inspector와 Obsidian wiki로 검토 화면을 만듭니다.",
+      "parent_id": "root",
+      "depth": 1
+    },
+    {
+      "id": "answer_claim",
+      "label": "Answer Claim",
+      "type": "claim",
+      "weight": 0.76,
+      "description": "사용자 질문에 대한 핵심 답변 주장",
+      "parent_id": "claim",
+      "depth": 2
+    },
+    {
+      "id": "data_gap_claim",
+      "label": "Data Gap Claim",
+      "type": "claim",
+      "weight": 0.64,
+      "description": "근거 부족/미확정 조건을 숨기지 않는 주장",
+      "parent_id": "claim",
+      "depth": 2
+    },
+    {
+      "id": "answerability",
+      "label": "Answerability State",
+      "type": "claim",
+      "weight": 0.66,
+      "description": "answered / insufficient-but-grounded 상태",
+      "parent_id": "claim",
+      "depth": 2
+    },
+    {
+      "id": "indicator",
+      "label": "Quantitative Indicator",
+      "type": "claim",
+      "weight": 0.58,
+      "description": "latency, score, count 등 측정값",
+      "parent_id": "claim",
+      "depth": 2
+    },
+    {
+      "id": "excerpt",
+      "label": "Evidence Excerpt",
+      "type": "evidence",
+      "weight": 0.82,
+      "description": "답변을 지지하는 짧은 근거 excerpt",
+      "parent_id": "evidence",
+      "depth": 2
+    },
+    {
+      "id": "source_doc",
+      "label": "Source Document",
+      "type": "evidence",
+      "weight": 0.78,
+      "description": "문서/데이터 파일/DB row 출처",
+      "parent_id": "evidence",
+      "depth": 2
+    },
+    {
+      "id": "candidate_set",
+      "label": "Candidate Set",
+      "type": "evidence",
+      "weight": 0.72,
+      "description": "검색된 후보 객체와 ranking",
+      "parent_id": "evidence",
+      "depth": 2
+    },
+    {
+      "id": "provenance",
+      "label": "Provenance Trace",
+      "type": "evidence",
+      "weight": 0.7,
+      "description": "어떤 근거가 어떤 claim을 지지했는지 추적",
+      "parent_id": "evidence",
+      "depth": 2
+    },
+    {
+      "id": "bmo",
+      "label": "Business Model Ontology",
+      "type": "entity",
+      "weight": 0.72,
+      "description": "Osterwalder BMO 기반 upper ontology anchor",
+      "parent_id": "ontology",
+      "depth": 2
+    },
+    {
+      "id": "owl_blueprint",
+      "label": "OWL 2 DL Blueprint",
+      "type": "entity",
+      "weight": 0.62,
+      "description": "문서화된 형식화 청사진; runtime reasoner는 아님",
+      "parent_id": "ontology",
+      "depth": 2
+    },
+    {
+      "id": "domain_entity",
+      "label": "Domain Entity",
+      "type": "entity",
+      "weight": 0.8,
+      "description": "Station, dataset, episode 같은 domain object",
+      "parent_id": "ontology",
+      "depth": 2
+    },
+    {
+      "id": "relation_type",
+      "label": "Relation Type",
+      "type": "relation",
+      "weight": 0.72,
+      "description": "supports, forStation, requiresReview 등 관계",
+      "parent_id": "ontology",
+      "depth": 2
+    },
+    {
+      "id": "name_resolver",
+      "label": "Name Resolver",
+      "type": "entity",
+      "weight": 0.54,
+      "description": "ST-152 같은 technical id를 사람이 읽는 이름으로 변환",
+      "parent_id": "ontology",
+      "depth": 2
+    },
+    {
+      "id": "contract",
+      "label": "Contract Check",
+      "type": "review",
+      "weight": 0.7,
+      "description": "응답 payload가 검사 계약을 통과했는지 확인",
+      "parent_id": "review",
+      "depth": 2
+    },
+    {
+      "id": "human_review",
+      "label": "Human Review",
+      "type": "review",
+      "weight": 0.78,
+      "description": "운영자가 판단해야 하는 항목을 분리",
+      "parent_id": "review",
+      "depth": 2
+    },
+    {
+      "id": "quality_guard",
+      "label": "Quality Guard",
+      "type": "review",
+      "weight": 0.68,
+      "description": "profile-specific guard와 failure reason",
+      "parent_id": "review",
+      "depth": 2
+    },
+    {
+      "id": "action",
+      "label": "Recommended Action",
+      "type": "review",
+      "weight": 0.66,
+      "description": "검토자가 다음에 할 수 있는 action",
+      "parent_id": "review",
+      "depth": 2
+    },
+    {
+      "id": "jsonl",
+      "label": "Runtime JSONL",
+      "type": "store",
+      "weight": 0.54,
+      "description": "local seed/runtime answer store",
+      "parent_id": "store",
+      "depth": 2
+    },
+    {
+      "id": "sqlite",
+      "label": "SQLite RAG Store",
+      "type": "store",
+      "weight": 0.58,
+      "description": "evaluation/snippet/review queue local DB",
+      "parent_id": "store",
+      "depth": 2
+    },
+    {
+      "id": "pgvector",
+      "label": "PostgreSQL + pgvector",
+      "type": "store",
+      "weight": 0.76,
+      "description": "live vector search adapter",
+      "parent_id": "store",
+      "depth": 2
+    },
+    {
+      "id": "hybrid_profile",
+      "label": "DB-only vs Hybrid",
+      "type": "store",
+      "weight": 0.66,
+      "description": "retrieval profile comparison",
+      "parent_id": "store",
+      "depth": 2
+    },
+    {
+      "id": "visual",
+      "label": "Visual Inspector",
+      "type": "projection",
+      "weight": 0.76,
+      "description": "single-answer evidence workspace",
+      "parent_id": "projection",
+      "depth": 2
+    },
+    {
+      "id": "eval_overview",
+      "label": "Evaluation Overview",
+      "type": "projection",
+      "weight": 0.72,
+      "description": "100-question coverage artifact",
+      "parent_id": "projection",
+      "depth": 2
+    },
+    {
+      "id": "obsidian",
+      "label": "Obsidian Wiki",
+      "type": "projection",
+      "weight": 0.74,
+      "description": "ontology-like markdown knowledge projection",
+      "parent_id": "projection",
+      "depth": 2
+    },
+    {
+      "id": "review_queue",
+      "label": "Review Queue",
+      "type": "projection",
+      "weight": 0.62,
+      "description": "review-required items for human inspection",
+      "parent_id": "projection",
+      "depth": 2
+    },
+    {
+      "id": "station_152",
+      "label": "충무로역 3.4호선 ST-152",
+      "type": "domain",
+      "weight": 0.62,
+      "description": "Seoul Bike case-study entity",
+      "parent_id": "domain_entity",
+      "depth": 3
+    },
+    {
+      "id": "station_150",
+      "label": "종로3가역 2번출구 뒤 ST-150",
+      "type": "domain",
+      "weight": 0.56,
+      "description": "candidate entity",
+      "parent_id": "domain_entity",
+      "depth": 3
+    },
+    {
+      "id": "shortage",
+      "label": "Shortage Episode",
+      "type": "domain",
+      "weight": 0.58,
+      "description": "운영 이상 징후 episode",
+      "parent_id": "relation_type",
+      "depth": 3
+    },
+    {
+      "id": "weather",
+      "label": "Weather Context",
+      "type": "domain",
+      "weight": 0.48,
+      "description": "날씨/시간 맥락 근거",
+      "parent_id": "source_doc",
+      "depth": 3
+    },
+    {
+      "id": "rel_supports",
+      "label": "supportsEvidence",
+      "type": "relation",
+      "weight": 0.5,
+      "description": "evidence가 claim을 지지",
+      "parent_id": "relation_type",
+      "depth": 3
+    },
+    {
+      "id": "rel_review",
+      "label": "requiresReview",
+      "type": "relation",
+      "weight": 0.54,
+      "description": "검토 gate와 연결",
+      "parent_id": "relation_type",
+      "depth": 3
+    },
+    {
+      "id": "entity_note",
+      "label": "Entity Note",
+      "type": "projection",
+      "weight": 0.52,
+      "description": "Obsidian entity page/backlink",
+      "parent_id": "obsidian",
+      "depth": 3
+    },
+    {
+      "id": "run_note",
+      "label": "Run Note",
+      "type": "projection",
+      "weight": 0.48,
+      "description": "평가 실행 단위 markdown note",
+      "parent_id": "obsidian",
+      "depth": 3
+    }
+  ],
+  "edges": [
+    {
+      "source": "root",
+      "target": "claim",
+      "relation": "parent-child",
+      "strength": 0.72
+    },
+    {
+      "source": "root",
+      "target": "evidence",
+      "relation": "parent-child",
+      "strength": 0.72
+    },
+    {
+      "source": "root",
+      "target": "ontology",
+      "relation": "parent-child",
+      "strength": 0.72
+    },
+    {
+      "source": "root",
+      "target": "review",
+      "relation": "parent-child",
+      "strength": 0.72
+    },
+    {
+      "source": "root",
+      "target": "store",
+      "relation": "parent-child",
+      "strength": 0.72
+    },
+    {
+      "source": "root",
+      "target": "projection",
+      "relation": "parent-child",
+      "strength": 0.72
+    },
+    {
+      "source": "claim",
+      "target": "answer_claim",
+      "relation": "parent-child",
+      "strength": 0.72
+    },
+    {
+      "source": "claim",
+      "target": "data_gap_claim",
+      "relation": "parent-child",
+      "strength": 0.72
+    },
+    {
+      "source": "claim",
+      "target": "answerability",
+      "relation": "parent-child",
+      "strength": 0.72
+    },
+    {
+      "source": "claim",
+      "target": "indicator",
+      "relation": "parent-child",
+      "strength": 0.72
+    },
+    {
+      "source": "evidence",
+      "target": "excerpt",
+      "relation": "parent-child",
+      "strength": 0.72
+    },
+    {
+      "source": "evidence",
+      "target": "source_doc",
+      "relation": "parent-child",
+      "strength": 0.72
+    },
+    {
+      "source": "evidence",
+      "target": "candidate_set",
+      "relation": "parent-child",
+      "strength": 0.72
+    },
+    {
+      "source": "evidence",
+      "target": "provenance",
+      "relation": "parent-child",
+      "strength": 0.72
+    },
+    {
+      "source": "ontology",
+      "target": "bmo",
+      "relation": "parent-child",
+      "strength": 0.72
+    },
+    {
+      "source": "ontology",
+      "target": "owl_blueprint",
+      "relation": "parent-child",
+      "strength": 0.72
+    },
+    {
+      "source": "ontology",
+      "target": "domain_entity",
+      "relation": "parent-child",
+      "strength": 0.72
+    },
+    {
+      "source": "ontology",
+      "target": "relation_type",
+      "relation": "parent-child",
+      "strength": 0.72
+    },
+    {
+      "source": "ontology",
+      "target": "name_resolver",
+      "relation": "parent-child",
+      "strength": 0.72
+    },
+    {
+      "source": "review",
+      "target": "contract",
+      "relation": "parent-child",
+      "strength": 0.72
+    },
+    {
+      "source": "review",
+      "target": "human_review",
+      "relation": "parent-child",
+      "strength": 0.72
+    },
+    {
+      "source": "review",
+      "target": "quality_guard",
+      "relation": "parent-child",
+      "strength": 0.72
+    },
+    {
+      "source": "review",
+      "target": "action",
+      "relation": "parent-child",
+      "strength": 0.72
+    },
+    {
+      "source": "store",
+      "target": "jsonl",
+      "relation": "parent-child",
+      "strength": 0.72
+    },
+    {
+      "source": "store",
+      "target": "sqlite",
+      "relation": "parent-child",
+      "strength": 0.72
+    },
+    {
+      "source": "store",
+      "target": "pgvector",
+      "relation": "parent-child",
+      "strength": 0.72
+    },
+    {
+      "source": "store",
+      "target": "hybrid_profile",
+      "relation": "parent-child",
+      "strength": 0.72
+    },
+    {
+      "source": "projection",
+      "target": "visual",
+      "relation": "parent-child",
+      "strength": 0.72
+    },
+    {
+      "source": "projection",
+      "target": "eval_overview",
+      "relation": "parent-child",
+      "strength": 0.72
+    },
+    {
+      "source": "projection",
+      "target": "obsidian",
+      "relation": "parent-child",
+      "strength": 0.72
+    },
+    {
+      "source": "projection",
+      "target": "review_queue",
+      "relation": "parent-child",
+      "strength": 0.72
+    },
+    {
+      "source": "domain_entity",
+      "target": "station_152",
+      "relation": "parent-child",
+      "strength": 0.72
+    },
+    {
+      "source": "domain_entity",
+      "target": "station_150",
+      "relation": "parent-child",
+      "strength": 0.72
+    },
+    {
+      "source": "relation_type",
+      "target": "shortage",
+      "relation": "parent-child",
+      "strength": 0.72
+    },
+    {
+      "source": "source_doc",
+      "target": "weather",
+      "relation": "parent-child",
+      "strength": 0.72
+    },
+    {
+      "source": "relation_type",
+      "target": "rel_supports",
+      "relation": "parent-child",
+      "strength": 0.72
+    },
+    {
+      "source": "relation_type",
+      "target": "rel_review",
+      "relation": "parent-child",
+      "strength": 0.72
+    },
+    {
+      "source": "obsidian",
+      "target": "entity_note",
+      "relation": "parent-child",
+      "strength": 0.72
+    },
+    {
+      "source": "obsidian",
+      "target": "run_note",
+      "relation": "parent-child",
+      "strength": 0.72
+    },
+    {
+      "source": "answer_claim",
+      "target": "excerpt",
+      "relation": "supportedBy",
+      "strength": 0.88
+    },
+    {
+      "source": "excerpt",
+      "target": "source_doc",
+      "relation": "cites",
+      "strength": 0.82
+    },
+    {
+      "source": "candidate_set",
+      "target": "domain_entity",
+      "relation": "retrieves",
+      "strength": 0.78
+    },
+    {
+      "source": "domain_entity",
+      "target": "relation_type",
+      "relation": "participatesIn",
+      "strength": 0.78
+    },
+    {
+      "source": "human_review",
+      "target": "data_gap_claim",
+      "relation": "checks",
+      "strength": 0.75
+    },
+    {
+      "source": "contract",
+      "target": "answer_claim",
+      "relation": "validates",
+      "strength": 0.75
+    },
+    {
+      "source": "quality_guard",
+      "target": "answerability",
+      "relation": "guards",
+      "strength": 0.72
+    },
+    {
+      "source": "pgvector",
+      "target": "candidate_set",
+      "relation": "searches",
+      "strength": 0.82
+    },
+    {
+      "source": "hybrid_profile",
+      "target": "eval_overview",
+      "relation": "compares",
+      "strength": 0.7
+    },
+    {
+      "source": "visual",
+      "target": "provenance",
+      "relation": "renders",
+      "strength": 0.74
+    },
+    {
+      "source": "obsidian",
+      "target": "entity_note",
+      "relation": "projects",
+      "strength": 0.76
+    },
+    {
+      "source": "review_queue",
+      "target": "human_review",
+      "relation": "routes",
+      "strength": 0.8
+    },
+    {
+      "source": "station_152",
+      "target": "shortage",
+      "relation": "forEpisode",
+      "strength": 0.66
+    },
+    {
+      "source": "weather",
+      "target": "data_gap_claim",
+      "relation": "contextFor",
+      "strength": 0.55
+    },
+    {
+      "source": "rel_supports",
+      "target": "excerpt",
+      "relation": "labels",
+      "strength": 0.62
+    },
+    {
+      "source": "rel_review",
+      "target": "human_review",
+      "relation": "labels",
+      "strength": 0.62
+    }
+  ]
+}

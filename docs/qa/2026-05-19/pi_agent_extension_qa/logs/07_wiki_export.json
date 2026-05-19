@@ -1,0 +1,12 @@
+{
+  "vault": "/home/user/Documents/01_Projects/01_Active/bike-onto/docs/qa/2026-05-19/pi_agent_extension_qa/artifacts/wiki/OBYBK_RAG_Wiki",
+  "run_note": "/home/user/Documents/01_Projects/01_Active/bike-onto/docs/qa/2026-05-19/pi_agent_extension_qa/artifacts/wiki/OBYBK_RAG_Wiki/01_Runs/pi_ext_qa_run.md",
+  "index_note": "/home/user/Documents/01_Projects/01_Active/bike-onto/docs/qa/2026-05-19/pi_agent_extension_qa/artifacts/wiki/OBYBK_RAG_Wiki/00_Index.md",
+  "review_queue_note": "/home/user/Documents/01_Projects/01_Active/bike-onto/docs/qa/2026-05-19/pi_agent_extension_qa/artifacts/wiki/OBYBK_RAG_Wiki/03_Review_Queue/review_queue_pi_ext_qa_run.md",
+  "question_notes": 4,
+  "entity_notes": 1,
+  "concept_notes": 8,
+  "relation_notes": 3,
+  "asset_count": 0,
+  "obsidian_uri": "obsidian://open?vault=OBYBK_RAG_Wiki&file=00_Index"
+}

@@ -1,0 +1,1145 @@
+{
+  "kind": "single_answer",
+  "title": "Answer Evidence Radial Graph",
+  "question": "오늘 먼저 확인해야 할 대상은?",
+  "answer": "## 답변\n운영자는 충무로역 3.4호선 (ST-152)를 먼저 확인해야 합니다. 이 대상들은 현재 근거에서 이상 징후 또는 운영 점검 후보로 잡히므로 장애 신고, 최근 변화, 데이터 누락 여부를 함께 확인하는 것이 적절합니다.\n\n## 근거 기반 판단\n- 관련 운영·지표·추천 정보가 확인되지만, 원인과 우선순위는 별도 지표로 검증해야 합니다.\n- 관련 객체는 충무로역 3.4호선 (ST-152)로 확인되며, 이 목록은 우선 검토 대상 후보입니다.\n- 관련 관계 항목은 대상 대여소, 검토 필요, 근거, 사용 데이터셋입니다. 관계의 강도나 우선순위는 별도 지표로 검증해야 합니다.\n\n## 권장 조치\n- 대상: 충무로역 3.4호선 (ST-152)\n- 조치: 심야 반납 집중과 아침 공급 부족 패턴 확인\n- 이유: demo evidence graph candidate\n- 승인 필요 여부: 사람 검토 필요\n\n## 추가 확인 필요\n- 우선 확인 대상의 최근 상태와 이상 징후 후보\n- 장애 신고, 정비 이력, 데이터 누락 여부\n- 운영자가 즉시 조치할 수 있는 범위와 승인 필요 범위\n\n## 답변 한계\n현재 context만으로는 원인, 우선순위, 실행 결과를 확정할 수 없습니다. 위 판단은 우선 확인 후보로 제한됩니다.",
+  "profile": "GENERAL",
+  "nodes": [
+    {
+      "id": "question:root",
+      "type": "question",
+      "label": "오늘 먼저 확인해야 할 대상은?",
+      "description": "사용자 질문",
+      "weight": 1.0,
+      "status": "confirmed",
+      "value": null,
+      "visibleInUserView": true,
+      "metadata": {}
+    },
+    {
+      "id": "claim:1",
+      "type": "answer_claim",
+      "label": "운영자는 충무로역 3.4호선 (ST-152)를 먼저 확인해야 합니다. 이 대상들은 현재 근거에서 이상 징후 또는 운영 점검 후보로 잡히므로 장애 신고, 최근 변화, 데이터 누락 여부를 함께 확인하는 것이 적절합니다.",
+      "description": "답변 claim",
+      "weight": 1.0,
+      "status": "confirmed",
+      "value": null,
+      "visibleInUserView": true,
+      "metadata": {}
+    },
+    {
+      "id": "claim:2",
+      "type": "answer_claim",
+      "label": "관련 운영·지표·추천 정보가 확인되지만, 원인과 우선순위는 별도 지표로 검증해야 합니다.",
+      "description": "답변 claim",
+      "weight": 1.0,
+      "status": "confirmed",
+      "value": null,
+      "visibleInUserView": true,
+      "metadata": {}
+    },
+    {
+      "id": "claim:3",
+      "type": "answer_claim",
+      "label": "관련 객체는 충무로역 3.4호선 (ST-152)로 확인되며, 이 목록은 우선 검토 대상 후보입니다.",
+      "description": "답변 claim",
+      "weight": 1.0,
+      "status": "confirmed",
+      "value": null,
+      "visibleInUserView": true,
+      "metadata": {}
+    },
+    {
+      "id": "claim:4",
+      "type": "answer_claim",
+      "label": "관련 관계 항목은 대상 대여소, 검토 필요, 근거, 사용 데이터셋입니다. 관계의 강도나 우선순위는 별도 지표로 검증해야 합니다.",
+      "description": "답변 claim",
+      "weight": 1.0,
+      "status": "confirmed",
+      "value": null,
+      "visibleInUserView": true,
+      "metadata": {}
+    },
+    {
+      "id": "evidence:1",
+      "type": "evidence",
+      "label": "오늘 먼저 확인해야 할 대상은 충무로역 3.4호선 ST-152입니다. 심야 반납 집중과 아침 공급 부족 패턴을 review gate로 확인합니다.",
+      "description": "DEMO-001",
+      "weight": 1.0,
+      "status": "confirmed",
+      "value": null,
+      "visibleInUserView": true,
+      "metadata": {
+        "source": "DEMO-001",
+        "kind": "retrieved_context",
+        "score": 4.0
+      }
+    },
+    {
+      "id": "evidence:2",
+      "type": "evidence",
+      "label": "BMO anchor는 Business Model Ontology paper, OWL 2 DL-style blueprint, upper ontology seed를 연결해 LLM 임…",
+      "description": "DEMO-002",
+      "weight": 1.0,
+      "status": "confirmed",
+      "value": null,
+      "visibleInUserView": true,
+      "metadata": {
+        "source": "DEMO-002",
+        "kind": "retrieved_context",
+        "score": 0.0
+      }
+    },
+    {
+      "id": "evidence:3",
+      "type": "evidence",
+      "label": "file path only; quote extraction not available in current context",
+      "description": "sample_data/rag_visual_inspector/sample_eval_results.jsonl",
+      "weight": 1.0,
+      "status": "confirmed",
+      "value": null,
+      "visibleInUserView": true,
+      "metadata": {
+        "source": "sample_data/rag_visual_inspector/sample_eval_results.jsonl",
+        "kind": "evidence_document",
+        "score": null
+      }
+    },
+    {
+      "id": "evidence:4",
+      "type": "evidence",
+      "label": "file path only; quote extraction not available in current context",
+      "description": "docs/project/business_model_ontology_owl2dl_formalization_blueprint.md",
+      "weight": 1.0,
+      "status": "confirmed",
+      "value": null,
+      "visibleInUserView": true,
+      "metadata": {
+        "source": "docs/project/business_model_ontology_owl2dl_formalization_blueprint.md",
+        "kind": "evidence_document",
+        "score": null
+      }
+    },
+    {
+      "id": "entity:station-152",
+      "type": "entity",
+      "label": "충무로역 3.4호선 (ST-152)",
+      "description": "Station",
+      "weight": 1.0,
+      "status": "confirmed",
+      "value": null,
+      "visibleInUserView": true,
+      "metadata": {
+        "id": "station:152",
+        "type": "Station"
+      }
+    },
+    {
+      "id": "entity:metric-morning-shortage",
+      "type": "entity",
+      "label": "아침 공급 부족 후보 (metric:morning-shortage)",
+      "description": "Metric",
+      "weight": 1.0,
+      "status": "confirmed",
+      "value": null,
+      "visibleInUserView": true,
+      "metadata": {
+        "id": "metric:morning-shortage",
+        "type": "Metric"
+      }
+    },
+    {
+      "id": "entity:businessmodelontology",
+      "type": "entity",
+      "label": "Business Model Ontology (BusinessModelOntology)",
+      "description": "Concept",
+      "weight": 1.0,
+      "status": "confirmed",
+      "value": null,
+      "visibleInUserView": true,
+      "metadata": {
+        "id": "BusinessModelOntology",
+        "type": "Concept"
+      }
+    },
+    {
+      "id": "entity:owl2dlblueprint",
+      "type": "entity",
+      "label": "OWL 2 DL-style blueprint (OWL2DLBlueprint)",
+      "description": "Artifact",
+      "weight": 1.0,
+      "status": "confirmed",
+      "value": null,
+      "visibleInUserView": true,
+      "metadata": {
+        "id": "OWL2DLBlueprint",
+        "type": "Artifact"
+      }
+    },
+    {
+      "id": "relation:1",
+      "type": "relation",
+      "label": "대상 대여소",
+      "description": "metric:morning-shortage → station:152",
+      "weight": 1.0,
+      "status": "confirmed",
+      "value": null,
+      "visibleInUserView": true,
+      "metadata": {}
+    },
+    {
+      "id": "relation:2",
+      "type": "relation",
+      "label": "검토 필요",
+      "description": "ReviewGate → station:152",
+      "weight": 1.0,
+      "status": "confirmed",
+      "value": null,
+      "visibleInUserView": true,
+      "metadata": {}
+    },
+    {
+      "id": "relation:3",
+      "type": "relation",
+      "label": "근거",
+      "description": "BusinessModelOntology → OWL2DLBlueprint",
+      "weight": 1.0,
+      "status": "confirmed",
+      "value": null,
+      "visibleInUserView": true,
+      "metadata": {}
+    },
+    {
+      "id": "relation:4",
+      "type": "relation",
+      "label": "사용 데이터셋",
+      "description": "OWL2DLBlueprint → UpperOntologySeed",
+      "weight": 1.0,
+      "status": "confirmed",
+      "value": null,
+      "visibleInUserView": true,
+      "metadata": {}
+    },
+    {
+      "id": "metric:1",
+      "type": "debug",
+      "label": "retrieved_context_count=2",
+      "description": "retrieval",
+      "weight": 1.0,
+      "status": "debug_only",
+      "value": 2,
+      "visibleInUserView": false,
+      "metadata": {
+        "metric": "retrieved_context_count",
+        "value": 2,
+        "source": "retrieval"
+      }
+    },
+    {
+      "id": "metric:2",
+      "type": "debug",
+      "label": "evidence_document_count=2",
+      "description": "runtime_context",
+      "weight": 1.0,
+      "status": "debug_only",
+      "value": 2,
+      "visibleInUserView": false,
+      "metadata": {
+        "metric": "evidence_document_count",
+        "value": 2,
+        "source": "runtime_context"
+      }
+    },
+    {
+      "id": "metric:3",
+      "type": "debug",
+      "label": "related_object_count=4",
+      "description": "runtime_context",
+      "weight": 1.0,
+      "status": "debug_only",
+      "value": 4,
+      "visibleInUserView": false,
+      "metadata": {
+        "metric": "related_object_count",
+        "value": 4,
+        "source": "runtime_context"
+      }
+    },
+    {
+      "id": "metric:4",
+      "type": "debug",
+      "label": "related_relation_count=4",
+      "description": "runtime_context",
+      "weight": 1.0,
+      "status": "debug_only",
+      "value": 4,
+      "visibleInUserView": false,
+      "metadata": {
+        "metric": "related_relation_count",
+        "value": 4,
+        "source": "runtime_context"
+      }
+    },
+    {
+      "id": "metric:5",
+      "type": "debug",
+      "label": "recommended_action_count=1",
+      "description": "primary_context",
+      "weight": 1.0,
+      "status": "debug_only",
+      "value": 1,
+      "visibleInUserView": false,
+      "metadata": {
+        "metric": "recommended_action_count",
+        "value": 1,
+        "source": "primary_context"
+      }
+    },
+    {
+      "id": "metric:6",
+      "type": "debug",
+      "label": "top1_retrieval_score=4.0",
+      "description": "DEMO-001",
+      "weight": 1.0,
+      "status": "debug_only",
+      "value": 4.0,
+      "visibleInUserView": false,
+      "metadata": {
+        "metric": "top1_retrieval_score",
+        "value": 4.0,
+        "source": "DEMO-001"
+      }
+    },
+    {
+      "id": "metric:7",
+      "type": "debug",
+      "label": "top1_token_overlap=4",
+      "description": "DEMO-001",
+      "weight": 1.0,
+      "status": "debug_only",
+      "value": 4,
+      "visibleInUserView": false,
+      "metadata": {
+        "metric": "top1_token_overlap",
+        "value": 4,
+        "source": "DEMO-001"
+      }
+    },
+    {
+      "id": "metric:8",
+      "type": "debug",
+      "label": "top2_retrieval_score=0.0",
+      "description": "DEMO-002",
+      "weight": 1.0,
+      "status": "debug_only",
+      "value": 0.0,
+      "visibleInUserView": false,
+      "metadata": {
+        "metric": "top2_retrieval_score",
+        "value": 0.0,
+        "source": "DEMO-002"
+      }
+    },
+    {
+      "id": "metric:9",
+      "type": "debug",
+      "label": "top2_token_overlap=0",
+      "description": "DEMO-002",
+      "weight": 1.0,
+      "status": "debug_only",
+      "value": 0,
+      "visibleInUserView": false,
+      "metadata": {
+        "metric": "top2_token_overlap",
+        "value": 0,
+        "source": "DEMO-002"
+      }
+    },
+    {
+      "id": "metric:10",
+      "type": "metric",
+      "label": "대상 대여소=1",
+      "description": "related_relations",
+      "weight": 1.0,
+      "status": "confirmed",
+      "value": 1,
+      "visibleInUserView": true,
+      "metadata": {
+        "metric": "relation_count:forStation",
+        "value": 1,
+        "source": "related_relations"
+      }
+    },
+    {
+      "id": "metric:11",
+      "type": "metric",
+      "label": "근거=1",
+      "description": "related_relations",
+      "weight": 1.0,
+      "status": "confirmed",
+      "value": 1,
+      "visibleInUserView": true,
+      "metadata": {
+        "metric": "relation_count:hasEvidence",
+        "value": 1,
+        "source": "related_relations"
+      }
+    },
+    {
+      "id": "metric:12",
+      "type": "metric",
+      "label": "검토 필요=1",
+      "description": "related_relations",
+      "weight": 1.0,
+      "status": "confirmed",
+      "value": 1,
+      "visibleInUserView": true,
+      "metadata": {
+        "metric": "relation_count:requiresReview",
+        "value": 1,
+        "source": "related_relations"
+      }
+    },
+    {
+      "id": "metric:13",
+      "type": "metric",
+      "label": "사용 데이터셋=1",
+      "description": "related_relations",
+      "weight": 1.0,
+      "status": "confirmed",
+      "value": 1,
+      "visibleInUserView": true,
+      "metadata": {
+        "metric": "relation_count:usesDataset",
+        "value": 1,
+        "source": "related_relations"
+      }
+    },
+    {
+      "id": "metric:14",
+      "type": "metric",
+      "label": "relation_count=2",
+      "description": "DEMO-001",
+      "weight": 1.0,
+      "status": "confirmed",
+      "value": 2,
+      "visibleInUserView": true,
+      "metadata": {
+        "metric": "relation_count",
+        "value": 2,
+        "source": "DEMO-001"
+      }
+    },
+    {
+      "id": "metric:15",
+      "type": "metric",
+      "label": "relation_count=2",
+      "description": "DEMO-002",
+      "weight": 1.0,
+      "status": "confirmed",
+      "value": 2,
+      "visibleInUserView": true,
+      "metadata": {
+        "metric": "relation_count",
+        "value": 2,
+        "source": "DEMO-002"
+      }
+    },
+    {
+      "id": "action:1",
+      "type": "action",
+      "label": "심야 반납 집중과 아침 공급 부족 패턴 확인 · 충무로역 3.4호선 (ST-152)",
+      "description": "demo evidence graph candidate",
+      "weight": 1.0,
+      "status": "review_required",
+      "value": null,
+      "visibleInUserView": true,
+      "metadata": {}
+    },
+    {
+      "id": "gap:1",
+      "type": "data_gap",
+      "label": "아침 공급 부족 후보 (metric:morning-shortage) has no detailed location/address attributes in current context.",
+      "description": "추가 확인 필요",
+      "weight": 1.0,
+      "status": "gap",
+      "value": null,
+      "visibleInUserView": true,
+      "metadata": {}
+    },
+    {
+      "id": "gap:2",
+      "type": "data_gap",
+      "label": "Business Model Ontology (BusinessModelOntology) has no detailed location/address attributes in current context.",
+      "description": "추가 확인 필요",
+      "weight": 1.0,
+      "status": "gap",
+      "value": null,
+      "visibleInUserView": true,
+      "metadata": {}
+    },
+    {
+      "id": "gap:3",
+      "type": "data_gap",
+      "label": "OWL 2 DL-style blueprint (OWL2DLBlueprint) has no detailed location/address attributes in current context.",
+      "description": "추가 확인 필요",
+      "weight": 1.0,
+      "status": "gap",
+      "value": null,
+      "visibleInUserView": true,
+      "metadata": {}
+    },
+    {
+      "id": "gap:4",
+      "type": "data_gap",
+      "label": "Candidate identifiers are available, but explicit ranking/score values are not available in current context.",
+      "description": "추가 확인 필요",
+      "weight": 1.0,
+      "status": "gap",
+      "value": null,
+      "visibleInUserView": true,
+      "metadata": {}
+    },
+    {
+      "id": "review:gate",
+      "type": "review_gate",
+      "label": "검토 필요",
+      "description": "추천/조치 또는 검토 플래그가 포함되어 사람 검토가 필요합니다.",
+      "weight": 1.0,
+      "status": "review_required",
+      "value": null,
+      "visibleInUserView": true,
+      "metadata": {}
+    },
+    {
+      "id": "debug:1",
+      "type": "debug",
+      "label": "llm_mode=offline_cli",
+      "description": "Operator Debug",
+      "weight": 1.0,
+      "status": "debug_only",
+      "value": null,
+      "visibleInUserView": false,
+      "metadata": {}
+    },
+    {
+      "id": "debug:2",
+      "type": "debug",
+      "label": "model=offline-grounded",
+      "description": "Operator Debug",
+      "weight": 1.0,
+      "status": "debug_only",
+      "value": null,
+      "visibleInUserView": false,
+      "metadata": {}
+    },
+    {
+      "id": "debug:3",
+      "type": "debug",
+      "label": "contract_pass=True",
+      "description": "Operator Debug",
+      "weight": 1.0,
+      "status": "debug_only",
+      "value": null,
+      "visibleInUserView": false,
+      "metadata": {}
+    },
+    {
+      "id": "debug:4",
+      "type": "debug",
+      "label": "retrieval_latency_ms=0.604",
+      "description": "Operator Debug",
+      "weight": 1.0,
+      "status": "debug_only",
+      "value": null,
+      "visibleInUserView": false,
+      "metadata": {}
+    },
+    {
+      "id": "debug:5",
+      "type": "debug",
+      "label": "retrieved_context_count=2",
+      "description": "Operator Debug",
+      "weight": 1.0,
+      "status": "debug_only",
+      "value": null,
+      "visibleInUserView": false,
+      "metadata": {}
+    },
+    {
+      "id": "debug:6",
+      "type": "debug",
+      "label": "evidence_document_count=2",
+      "description": "Operator Debug",
+      "weight": 1.0,
+      "status": "debug_only",
+      "value": null,
+      "visibleInUserView": false,
+      "metadata": {}
+    },
+    {
+      "id": "debug:7",
+      "type": "debug",
+      "label": "related_object_count=4",
+      "description": "Operator Debug",
+      "weight": 1.0,
+      "status": "debug_only",
+      "value": null,
+      "visibleInUserView": false,
+      "metadata": {}
+    },
+    {
+      "id": "debug:8",
+      "type": "debug",
+      "label": "related_relation_count=4",
+      "description": "Operator Debug",
+      "weight": 1.0,
+      "status": "debug_only",
+      "value": null,
+      "visibleInUserView": false,
+      "metadata": {}
+    },
+    {
+      "id": "debug:9",
+      "type": "debug",
+      "label": "recommended_action_count=1",
+      "description": "Operator Debug",
+      "weight": 1.0,
+      "status": "debug_only",
+      "value": null,
+      "visibleInUserView": false,
+      "metadata": {}
+    },
+    {
+      "id": "debug:10",
+      "type": "debug",
+      "label": "top1_retrieval_score=4.0",
+      "description": "Operator Debug",
+      "weight": 1.0,
+      "status": "debug_only",
+      "value": null,
+      "visibleInUserView": false,
+      "metadata": {}
+    },
+    {
+      "id": "debug:11",
+      "type": "debug",
+      "label": "top1_token_overlap=4",
+      "description": "Operator Debug",
+      "weight": 1.0,
+      "status": "debug_only",
+      "value": null,
+      "visibleInUserView": false,
+      "metadata": {}
+    },
+    {
+      "id": "debug:12",
+      "type": "debug",
+      "label": "top2_retrieval_score=0.0",
+      "description": "Operator Debug",
+      "weight": 1.0,
+      "status": "debug_only",
+      "value": null,
+      "visibleInUserView": false,
+      "metadata": {}
+    },
+    {
+      "id": "debug:13",
+      "type": "debug",
+      "label": "top2_token_overlap=0",
+      "description": "Operator Debug",
+      "weight": 1.0,
+      "status": "debug_only",
+      "value": null,
+      "visibleInUserView": false,
+      "metadata": {}
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge:question-root:claim-1:답변",
+      "source": "question:root",
+      "target": "claim:1",
+      "label": "답변",
+      "strength": 1.0,
+      "relationType": "explains",
+      "visibleInUserView": true
+    },
+    {
+      "id": "edge:question-root:claim-2:답변",
+      "source": "question:root",
+      "target": "claim:2",
+      "label": "답변",
+      "strength": 1.0,
+      "relationType": "explains",
+      "visibleInUserView": true
+    },
+    {
+      "id": "edge:question-root:claim-3:답변",
+      "source": "question:root",
+      "target": "claim:3",
+      "label": "답변",
+      "strength": 1.0,
+      "relationType": "explains",
+      "visibleInUserView": true
+    },
+    {
+      "id": "edge:question-root:claim-4:답변",
+      "source": "question:root",
+      "target": "claim:4",
+      "label": "답변",
+      "strength": 1.0,
+      "relationType": "explains",
+      "visibleInUserView": true
+    },
+    {
+      "id": "edge:evidence-1:claim-1:근거",
+      "source": "evidence:1",
+      "target": "claim:1",
+      "label": "근거",
+      "strength": 1.0,
+      "relationType": "supports",
+      "visibleInUserView": true
+    },
+    {
+      "id": "edge:evidence-2:claim-1:근거",
+      "source": "evidence:2",
+      "target": "claim:1",
+      "label": "근거",
+      "strength": 1.0,
+      "relationType": "supports",
+      "visibleInUserView": true
+    },
+    {
+      "id": "edge:evidence-3:claim-1:근거",
+      "source": "evidence:3",
+      "target": "claim:1",
+      "label": "근거",
+      "strength": 1.0,
+      "relationType": "supports",
+      "visibleInUserView": true
+    },
+    {
+      "id": "edge:evidence-4:claim-1:근거",
+      "source": "evidence:4",
+      "target": "claim:1",
+      "label": "근거",
+      "strength": 1.0,
+      "relationType": "supports",
+      "visibleInUserView": true
+    },
+    {
+      "id": "edge:claim-1:entity-station-152:관련-객체",
+      "source": "claim:1",
+      "target": "entity:station-152",
+      "label": "관련 객체",
+      "strength": 1.0,
+      "relationType": "uses",
+      "visibleInUserView": true
+    },
+    {
+      "id": "edge:claim-1:entity-metric-morning-shortage:관련-객체",
+      "source": "claim:1",
+      "target": "entity:metric-morning-shortage",
+      "label": "관련 객체",
+      "strength": 1.0,
+      "relationType": "uses",
+      "visibleInUserView": true
+    },
+    {
+      "id": "edge:claim-1:entity-businessmodelontology:관련-객체",
+      "source": "claim:1",
+      "target": "entity:businessmodelontology",
+      "label": "관련 객체",
+      "strength": 1.0,
+      "relationType": "uses",
+      "visibleInUserView": true
+    },
+    {
+      "id": "edge:claim-1:entity-owl2dlblueprint:관련-객체",
+      "source": "claim:1",
+      "target": "entity:owl2dlblueprint",
+      "label": "관련 객체",
+      "strength": 1.0,
+      "relationType": "uses",
+      "visibleInUserView": true
+    },
+    {
+      "id": "edge:claim-1:relation-1:대상-대여소",
+      "source": "claim:1",
+      "target": "relation:1",
+      "label": "대상 대여소",
+      "strength": 1.0,
+      "relationType": "explains",
+      "visibleInUserView": true
+    },
+    {
+      "id": "edge:relation-1:entity-station-152:대상-대여소",
+      "source": "relation:1",
+      "target": "entity:station-152",
+      "label": "대상 대여소",
+      "strength": 1.0,
+      "relationType": "uses",
+      "visibleInUserView": true
+    },
+    {
+      "id": "edge:claim-1:relation-2:검토-필요",
+      "source": "claim:1",
+      "target": "relation:2",
+      "label": "검토 필요",
+      "strength": 1.0,
+      "relationType": "explains",
+      "visibleInUserView": true
+    },
+    {
+      "id": "edge:relation-2:entity-station-152:검토-필요",
+      "source": "relation:2",
+      "target": "entity:station-152",
+      "label": "검토 필요",
+      "strength": 1.0,
+      "relationType": "uses",
+      "visibleInUserView": true
+    },
+    {
+      "id": "edge:claim-1:relation-3:근거",
+      "source": "claim:1",
+      "target": "relation:3",
+      "label": "근거",
+      "strength": 1.0,
+      "relationType": "explains",
+      "visibleInUserView": true
+    },
+    {
+      "id": "edge:relation-3:entity-owl2dlblueprint:근거",
+      "source": "relation:3",
+      "target": "entity:owl2dlblueprint",
+      "label": "근거",
+      "strength": 1.0,
+      "relationType": "uses",
+      "visibleInUserView": true
+    },
+    {
+      "id": "edge:claim-1:relation-4:사용-데이터셋",
+      "source": "claim:1",
+      "target": "relation:4",
+      "label": "사용 데이터셋",
+      "strength": 1.0,
+      "relationType": "explains",
+      "visibleInUserView": true
+    },
+    {
+      "id": "edge:metric-1:claim-1:정량-지표",
+      "source": "metric:1",
+      "target": "claim:1",
+      "label": "정량 지표",
+      "strength": 1.0,
+      "relationType": "supports",
+      "visibleInUserView": false
+    },
+    {
+      "id": "edge:metric-2:claim-1:정량-지표",
+      "source": "metric:2",
+      "target": "claim:1",
+      "label": "정량 지표",
+      "strength": 1.0,
+      "relationType": "supports",
+      "visibleInUserView": false
+    },
+    {
+      "id": "edge:metric-3:claim-1:정량-지표",
+      "source": "metric:3",
+      "target": "claim:1",
+      "label": "정량 지표",
+      "strength": 1.0,
+      "relationType": "supports",
+      "visibleInUserView": false
+    },
+    {
+      "id": "edge:metric-4:claim-1:정량-지표",
+      "source": "metric:4",
+      "target": "claim:1",
+      "label": "정량 지표",
+      "strength": 1.0,
+      "relationType": "supports",
+      "visibleInUserView": false
+    },
+    {
+      "id": "edge:metric-5:claim-1:정량-지표",
+      "source": "metric:5",
+      "target": "claim:1",
+      "label": "정량 지표",
+      "strength": 1.0,
+      "relationType": "supports",
+      "visibleInUserView": false
+    },
+    {
+      "id": "edge:metric-6:claim-1:정량-지표",
+      "source": "metric:6",
+      "target": "claim:1",
+      "label": "정량 지표",
+      "strength": 1.0,
+      "relationType": "supports",
+      "visibleInUserView": false
+    },
+    {
+      "id": "edge:metric-7:claim-1:정량-지표",
+      "source": "metric:7",
+      "target": "claim:1",
+      "label": "정량 지표",
+      "strength": 1.0,
+      "relationType": "supports",
+      "visibleInUserView": false
+    },
+    {
+      "id": "edge:metric-8:claim-1:정량-지표",
+      "source": "metric:8",
+      "target": "claim:1",
+      "label": "정량 지표",
+      "strength": 1.0,
+      "relationType": "supports",
+      "visibleInUserView": false
+    },
+    {
+      "id": "edge:metric-9:claim-1:정량-지표",
+      "source": "metric:9",
+      "target": "claim:1",
+      "label": "정량 지표",
+      "strength": 1.0,
+      "relationType": "supports",
+      "visibleInUserView": false
+    },
+    {
+      "id": "edge:metric-10:claim-1:정량-지표",
+      "source": "metric:10",
+      "target": "claim:1",
+      "label": "정량 지표",
+      "strength": 1.0,
+      "relationType": "supports",
+      "visibleInUserView": true
+    },
+    {
+      "id": "edge:metric-11:claim-1:정량-지표",
+      "source": "metric:11",
+      "target": "claim:1",
+      "label": "정량 지표",
+      "strength": 1.0,
+      "relationType": "supports",
+      "visibleInUserView": true
+    },
+    {
+      "id": "edge:metric-12:claim-1:정량-지표",
+      "source": "metric:12",
+      "target": "claim:1",
+      "label": "정량 지표",
+      "strength": 1.0,
+      "relationType": "supports",
+      "visibleInUserView": true
+    },
+    {
+      "id": "edge:metric-13:claim-1:정량-지표",
+      "source": "metric:13",
+      "target": "claim:1",
+      "label": "정량 지표",
+      "strength": 1.0,
+      "relationType": "supports",
+      "visibleInUserView": true
+    },
+    {
+      "id": "edge:metric-14:claim-1:정량-지표",
+      "source": "metric:14",
+      "target": "claim:1",
+      "label": "정량 지표",
+      "strength": 1.0,
+      "relationType": "supports",
+      "visibleInUserView": true
+    },
+    {
+      "id": "edge:metric-15:claim-1:정량-지표",
+      "source": "metric:15",
+      "target": "claim:1",
+      "label": "정량 지표",
+      "strength": 1.0,
+      "relationType": "supports",
+      "visibleInUserView": true
+    },
+    {
+      "id": "edge:claim-1:action-1:권장-조치",
+      "source": "claim:1",
+      "target": "action:1",
+      "label": "권장 조치",
+      "strength": 1.0,
+      "relationType": "requires_review",
+      "visibleInUserView": true
+    },
+    {
+      "id": "edge:claim-1:gap-1:부족한-근거",
+      "source": "claim:1",
+      "target": "gap:1",
+      "label": "부족한 근거",
+      "strength": 1.0,
+      "relationType": "missing",
+      "visibleInUserView": true
+    },
+    {
+      "id": "edge:claim-1:gap-2:부족한-근거",
+      "source": "claim:1",
+      "target": "gap:2",
+      "label": "부족한 근거",
+      "strength": 1.0,
+      "relationType": "missing",
+      "visibleInUserView": true
+    },
+    {
+      "id": "edge:claim-1:gap-3:부족한-근거",
+      "source": "claim:1",
+      "target": "gap:3",
+      "label": "부족한 근거",
+      "strength": 1.0,
+      "relationType": "missing",
+      "visibleInUserView": true
+    },
+    {
+      "id": "edge:claim-1:gap-4:부족한-근거",
+      "source": "claim:1",
+      "target": "gap:4",
+      "label": "부족한 근거",
+      "strength": 1.0,
+      "relationType": "missing",
+      "visibleInUserView": true
+    },
+    {
+      "id": "edge:claim-1:review-gate:승인-필요",
+      "source": "claim:1",
+      "target": "review:gate",
+      "label": "승인 필요",
+      "strength": 1.0,
+      "relationType": "requires_review",
+      "visibleInUserView": true
+    },
+    {
+      "id": "edge:debug-1:claim-1:debug",
+      "source": "debug:1",
+      "target": "claim:1",
+      "label": "debug",
+      "strength": 1.0,
+      "relationType": "debug",
+      "visibleInUserView": false
+    },
+    {
+      "id": "edge:debug-2:claim-1:debug",
+      "source": "debug:2",
+      "target": "claim:1",
+      "label": "debug",
+      "strength": 1.0,
+      "relationType": "debug",
+      "visibleInUserView": false
+    },
+    {
+      "id": "edge:debug-3:claim-1:debug",
+      "source": "debug:3",
+      "target": "claim:1",
+      "label": "debug",
+      "strength": 1.0,
+      "relationType": "debug",
+      "visibleInUserView": false
+    },
+    {
+      "id": "edge:debug-4:claim-1:debug",
+      "source": "debug:4",
+      "target": "claim:1",
+      "label": "debug",
+      "strength": 1.0,
+      "relationType": "debug",
+      "visibleInUserView": false
+    },
+    {
+      "id": "edge:debug-5:claim-1:debug",
+      "source": "debug:5",
+      "target": "claim:1",
+      "label": "debug",
+      "strength": 1.0,
+      "relationType": "debug",
+      "visibleInUserView": false
+    },
+    {
+      "id": "edge:debug-6:claim-1:debug",
+      "source": "debug:6",
+      "target": "claim:1",
+      "label": "debug",
+      "strength": 1.0,
+      "relationType": "debug",
+      "visibleInUserView": false
+    },
+    {
+      "id": "edge:debug-7:claim-1:debug",
+      "source": "debug:7",
+      "target": "claim:1",
+      "label": "debug",
+      "strength": 1.0,
+      "relationType": "debug",
+      "visibleInUserView": false
+    },
+    {
+      "id": "edge:debug-8:claim-1:debug",
+      "source": "debug:8",
+      "target": "claim:1",
+      "label": "debug",
+      "strength": 1.0,
+      "relationType": "debug",
+      "visibleInUserView": false
+    },
+    {
+      "id": "edge:debug-9:claim-1:debug",
+      "source": "debug:9",
+      "target": "claim:1",
+      "label": "debug",
+      "strength": 1.0,
+      "relationType": "debug",
+      "visibleInUserView": false
+    },
+    {
+      "id": "edge:debug-10:claim-1:debug",
+      "source": "debug:10",
+      "target": "claim:1",
+      "label": "debug",
+      "strength": 1.0,
+      "relationType": "debug",
+      "visibleInUserView": false
+    },
+    {
+      "id": "edge:debug-11:claim-1:debug",
+      "source": "debug:11",
+      "target": "claim:1",
+      "label": "debug",
+      "strength": 1.0,
+      "relationType": "debug",
+      "visibleInUserView": false
+    },
+    {
+      "id": "edge:debug-12:claim-1:debug",
+      "source": "debug:12",
+      "target": "claim:1",
+      "label": "debug",
+      "strength": 1.0,
+      "relationType": "debug",
+      "visibleInUserView": false
+    },
+    {
+      "id": "edge:debug-13:claim-1:debug",
+      "source": "debug:13",
+      "target": "claim:1",
+      "label": "debug",
+      "strength": 1.0,
+      "relationType": "debug",
+      "visibleInUserView": false
+    }
+  ],
+  "summary": {
+    "contractPass": true,
+    "requiresReview": true,
+    "llmMode": "offline_cli",
+    "qualityGuardNotes": [],
+    "nodeCount": 51,
+    "edgeCount": 53
+  }
+}

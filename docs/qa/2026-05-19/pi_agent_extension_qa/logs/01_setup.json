@@ -1,0 +1,11 @@
+{
+  "configured": true,
+  "config_path": "/tmp/bike_onto_pi_agent_extension_qa_home/config.json",
+  "app_home": "/tmp/bike_onto_pi_agent_extension_qa_home",
+  "llm_mode": "offline",
+  "model": "gpt-5.2",
+  "key_file_exists": false,
+  "retriever": "local",
+  "runtime_answers": "",
+  "pgvector_seed": ""
+}
