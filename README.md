@@ -17,9 +17,21 @@ OBYBK는 RAG 답변을 단순 자연어 텍스트로 끝내지 않고, **claim, 
 
 서울 공공 모빌리티 데이터는 이 프레임워크를 검증하기 위한 **case-study binding**입니다. 프로젝트의 중심은 특정 서비스 분석기가 아니라, 어떤 도메인 데이터라도 RAG 답변을 검증 가능한 evidence graph로 바꾸는 방법입니다.
 
-<p align="center">
-  <img src="docs/assets/diagrams/framework_architecture_overview.png" alt="OBYBK Framework Architecture" width="100%">
-</p>
+```mermaid
+flowchart LR
+    A[Domain artifacts] --> B[CLI inspection]
+    B --> C[RAG answer payload]
+    C --> D[Claim / Evidence / Entity / Relation]
+    D --> E[Review gate]
+    D --> F[VisualGraphPayload]
+    F --> G[Visual Inspector]
+    F --> H[Evaluation Overview]
+    F --> I[Obsidian Wiki]
+
+    J[BMO paper] --> K[OWL 2 DL-style blueprint]
+    K --> L[Upper ontology seed]
+    L --> D
+```
 
 ---
 
@@ -327,34 +339,42 @@ raw 값은 보존하고 display label을 추가해, **검증 가능성**과 **�
 
 OBYBK의 runtime 흐름은 domain artifact를 RAG answer payload로 만들고, 이를 inspection graph와 visual/export artifact로 투영합니다.
 
-<details>
-<summary>Mermaid architecture source</summary>
-
 ```mermaid
-flowchart TD
-    O[Business Model Ontology paper] --> P[OWL 2 DL-style blueprint]
-    P --> Q[Upper ontology seed\ncandidate/promotion records]
+flowchart LR
+    subgraph S[Ontology Seed]
+        BMO[Business Model Ontology paper]
+        BP[OWL 2 DL-style blueprint]
+        US[Upper ontology seed]
+        BMO --> BP --> US
+    end
 
-    A[Fragmented domain data / docs] --> B[Domain Artifact Directory]
-    B --> C[inspect-dir]
-    C --> D[domain_manifest.json]
-    D --> E[ask / chat / visual]
-    E --> F[Retrieval\nlocal seed or PostgreSQL/pgvector]
-    F --> G[RAG Answer Payload]
+    subgraph R[RAG Runtime]
+        DA[Domain artifacts]
+        CLI[CLI\ninspect-dir / ask / visual]
+        RET[Retrieval\nlocal seed / pgvector]
+        PAY[RAG answer payload]
+        POL[Answerability\nReview policy]
+        DEC[Inspection decomposition\nclaim / evidence / entity / relation]
+        DA --> CLI --> RET --> PAY --> POL --> DEC
+        US --> DEC
+    end
 
-    Q --> I[Inspection Decomposition\nclaim / evidence / entity / relation]
-    G --> H[Answer Policy\nanswerability / review gate]
-    H --> I
-    I --> J[VisualGraphPayload]
-    J --> K[Visual Inspector]
-    J --> L[Evaluation Overview]
-    J --> M[Obsidian Wiki Export]
-    G --> N[Local Store / PostgreSQL handoff]
+    subgraph O[Outputs]
+        VGP[VisualGraphPayload]
+        VI[Visual Inspector]
+        EV[Evaluation Overview]
+        OW[Obsidian Wiki Export]
+        DB[Local store / pgvector handoff]
+        DEC --> VGP
+        VGP --> VI
+        VGP --> EV
+        VGP --> OW
+        VGP --> DB
+    end
 ```
 
-</details>
-
-Ontology generation and projection diagrams:
+<details>
+<summary>Generated PNG diagrams</summary>
 
 <p align="center">
   <img src="docs/assets/diagrams/ontology_generation_pipeline.png" alt="Ontology generation pipeline" width="100%">
@@ -363,6 +383,8 @@ Ontology generation and projection diagrams:
 <p align="center">
   <img src="docs/assets/diagrams/obsidian_projection_map.png" alt="Obsidian projection map" width="100%">
 </p>
+
+</details>
 
 ---
 
