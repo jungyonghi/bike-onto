@@ -1,6 +1,6 @@
 # Bike Onto minimal repository
 
-This repository is a minimized GitHub-ready packaging of the OBYBK / Bike Onto RAG inspection framework.
+This repository is a minimized GitHub-ready portfolio packaging of the OBYBK / Bike Onto RAG inspection framework prototype. It is not presented as a production-ready service.
 
 Included:
 - README and referenced visual assets

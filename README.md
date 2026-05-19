@@ -1,6 +1,6 @@
 # Bike Onto
 
-**OBYBK — CLI-first RAG Inspection Framework with Ontology-Hybrid Evidence Graphs**
+**OBYBK — Portfolio prototype for a CLI-first RAG Inspection Framework with Ontology-Hybrid Evidence Graphs**
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-000000?style=flat-square&logo=python&logoColor=white&labelColor=000000" alt="Python">
@@ -13,9 +13,11 @@
 
 > **RAG finds evidence. OBYBK makes the answer inspectable.**
 
-OBYBK는 RAG 답변을 단순 자연어 텍스트로 끝내지 않고, **claim, evidence, entity, relation, review gate**로 분해해 사람이 검토할 수 있는 산출물로 남기는 CLI-first framework입니다.
+OBYBK는 RAG 답변을 단순 자연어 텍스트로 끝내지 않고, **claim, evidence, entity, relation, review gate**로 분해해 사람이 검토할 수 있는 산출물로 남기는 CLI-first framework prototype입니다.
 
 서울 공공 모빌리티 데이터는 이 프레임워크를 검증하기 위한 **case-study binding**입니다. 프로젝트의 중심은 특정 서비스 분석기가 아니라, 어떤 도메인 데이터라도 RAG 답변을 검증 가능한 evidence graph로 바꾸는 방법입니다.
+
+> **Scope**: 이 repo는 production service가 아니라 portfolio-grade prototype입니다. 제공 목적은 “실제 운영 시스템 완성”이 아니라, RAG 답변을 inspection artifact로 바꾸는 설계와 CLI workflow를 보여주는 것입니다.
 
 ```mermaid
 flowchart LR
@@ -59,19 +61,19 @@ OBYBK는 다음 문제를 해결합니다.
 
 ## Implementation Status
 
-현재 README는 구현 완료된 기능과 의도적으로 제외한 범위를 분리해 적습니다.
+현재 README는 prototype으로 구현한 부분과 production-ready로 주장하지 않는 부분을 분리해 적습니다.
 
 | Area | Status |
 |---|---|
-| CLI workflow | implemented: `inspect-dir`, `ask`, `chat`, `visual`, `visual-eval`, `wiki-export`, `ontology-map` |
-| RAG inspection payload | implemented: claim, evidence, entity, relation, review gate decomposition |
-| Ontology seed anchor | implemented as BMO-based blueprint + reusable upper ontology seed generator |
-| Visual workflow | implemented: clickable CLI links, ontology tree/radial page, app-window mode |
-| Evaluation | implemented: domain-specific benchmark policy + Seoul Bike 100 QA reference snapshot + 20-question DB-only vs Ontology-Hybrid diagnostic snapshot |
-| Obsidian projection | implemented: run/question/entity/relation/review notes with backlinks |
-| Retrieval store | implemented: local seed store + PostgreSQL/pgvector adapter |
-| Tests | `183 passed, 3 warnings` |
-| Not claimed | full OWL reasoner runtime, complete OWL validation pipeline, independent human evaluation |
+| CLI workflow | prototype implemented: `inspect-dir`, `ask`, `chat`, `visual`, `visual-eval`, `wiki-export`, `ontology-map` |
+| RAG inspection payload | prototype implemented: claim, evidence, entity, relation, review gate decomposition |
+| Ontology seed anchor | documented/implemented as BMO-based blueprint + reusable upper ontology seed generator |
+| Visual workflow | prototype implemented: clickable CLI links, ontology tree/radial page, app-window mode |
+| Evaluation | reference snapshot: domain-specific benchmark policy + Seoul Bike 100 QA case-study snapshot |
+| Obsidian projection | prototype implemented: run/question/entity/relation/review notes with backlinks |
+| Retrieval store | local/prototype adapter: SQLite handoff + PostgreSQL/pgvector adapter |
+| Tests | `183 passed, 3 warnings` on packaged fixtures and smoke/regression tests |
+| Not claimed | production deployment, managed service, complete domain DB reproduction, full OWL reasoner runtime, complete OWL validation pipeline, independent human evaluation |
 
 ---
 
