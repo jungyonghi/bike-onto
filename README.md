@@ -58,7 +58,7 @@ OBYBK는 다음 문제를 해결합니다.
 | Evaluation | implemented: domain-specific benchmark policy + Seoul Bike 100 QA reference snapshot + 20-question DB-only vs Ontology-Hybrid diagnostic snapshot |
 | Obsidian projection | implemented: run/question/entity/relation/review notes with backlinks |
 | Retrieval store | implemented: local seed store + PostgreSQL/pgvector adapter |
-| Tests | `182 passed, 3 warnings` |
+| Tests | `183 passed, 3 warnings` |
 | Not claimed | full OWL reasoner runtime, complete OWL validation pipeline, independent human evaluation |
 
 ---
@@ -582,9 +582,28 @@ PS C:\Projects\obybk> .\tools\scripts\rag\demo_wizard.ps1 -Yes
 
 ## CLI Commands
 
+CLI 예시는 README뿐 아니라 Markdown/CSV로 저장할 수 있습니다.
+
+<details>
+<summary>CLI examples export command</summary>
+
+```text
+python tools/scripts/rag/general_rag_cli.py cli-examples \
+  --format md \
+  --output docs/cli_examples.md \
+  --csv-output docs/cli_examples.csv \
+  --screenshot docs/assets/screenshots/cli_examples/cli_examples_export_screenshot.png
+```
+
+</details>
+
+<p align="center">
+  <img src="docs/assets/screenshots/cli_examples/cli_examples_export_screenshot.png" alt="CLI examples export screenshot" width="100%">
+</p>
+
 | Group | Commands |
 |---|---|
-| Demo / inspection | `demo-wizard`, `inspect-dir` |
+| Demo / inspection | `demo-wizard`, `inspect-dir`, `cli-examples` |
 | RAG answer | `ask`, `chat`, `report` |
 | Visuals | `visual`, `visual-eval`, `ontology-map`, `inspect-answer` |
 | Wiki / benchmark | `wiki-export`, `benchmark-polish` |
@@ -667,7 +686,7 @@ venv/bin/python -m pytest tools/tests -q
 Current result:
 
 ```text
-182 passed, 3 warnings
+183 passed, 3 warnings
 ```
 
 ---

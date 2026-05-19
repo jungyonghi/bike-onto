@@ -143,6 +143,35 @@ def test_general_rag_cli_demo_wizard_prompts_and_creates_artifacts(tmp_path: Pat
     assert (output_dir / "OBYBK_RAG_Wiki" / "00_Index.md").exists()
 
 
+def test_general_rag_cli_cli_examples_exports_markdown_csv_and_screenshot(tmp_path: Path) -> None:
+    md_path = tmp_path / "cli_examples.md"
+    csv_path = tmp_path / "cli_examples.csv"
+    png_path = tmp_path / "cli_examples.png"
+
+    result = _run_cli(
+        [
+            "cli-examples",
+            "--format",
+            "md",
+            "--output",
+            str(md_path),
+            "--csv-output",
+            str(csv_path),
+            "--screenshot",
+            str(png_path),
+            "--json-summary",
+        ]
+    )
+
+    payload = json.loads(result.stdout)
+    assert payload["count"] >= 5
+    assert md_path.exists()
+    assert csv_path.exists()
+    assert png_path.exists()
+    assert "Benchmark polish" in md_path.read_text(encoding="utf-8")
+    assert "workflow,command,purpose,save_as" in csv_path.read_text(encoding="utf-8").splitlines()[0]
+
+
 def test_general_rag_cli_agent_catalog_and_print_only_runner() -> None:
     catalog_result = _run_cli(["agent-catalog", "--compact"])
     catalog = json.loads(catalog_result.stdout)

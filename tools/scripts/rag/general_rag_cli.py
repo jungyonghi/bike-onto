@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import csv
 from datetime import datetime, timezone
 import html
 import json
@@ -39,6 +40,7 @@ from rag.visual_inspector import build_evaluation_overview_payload, build_visual
 NATIVE_AGENT_COMMANDS = [
     "demo-wizard",
     "inspect-dir",
+    "cli-examples",
     "ask",
     "chat",
     "report",
@@ -1093,6 +1095,188 @@ def agent_catalog(args: argparse.Namespace) -> int:
     return 0
 
 
+CLI_EXAMPLE_COLUMNS = ("workflow", "command", "purpose", "save_as")
+
+
+def build_cli_example_rows() -> list[dict[str, str]]:
+    return [
+        {
+            "workflow": "Inspect domain directory",
+            "command": "python tools/scripts/rag/general_rag_cli.py inspect-dir --domain-dir sample_data/rag_visual_inspector --output artifacts/domain_manifest.json --json",
+            "purpose": "Resolve runnable artifact paths from a fragmented domain folder.",
+            "save_as": "JSON manifest",
+        },
+        {
+            "workflow": "Evaluation overview",
+            "command": "python tools/scripts/rag/general_rag_cli.py visual-eval --results-jsonl sample_data/rag_visual_inspector/sample_eval_results.jsonl --output artifacts/evaluation_overview.html --graph-json artifacts/evaluation_overview.visual_graph.json --json",
+            "purpose": "Render the 100-QA inspection overview as a local HTML visual graph.",
+            "save_as": "HTML + JSON",
+        },
+        {
+            "workflow": "Obsidian wiki export",
+            "command": "python tools/scripts/rag/general_rag_cli.py wiki-export --results-jsonl sample_data/rag_visual_inspector/sample_eval_results.jsonl --graph-json sample_data/rag_visual_inspector/sample_visual_graph.json --vault artifacts/OBYBK_RAG_Wiki --run-id demo_run --json",
+            "purpose": "Project questions, entities, relations, and review queue into an Obsidian vault.",
+            "save_as": "Markdown vault",
+        },
+        {
+            "workflow": "Ontology map",
+            "command": "python tools/scripts/rag/general_rag_cli.py ontology-map --output artifacts/ontology_map.png --preview artifacts/ontology_map_preview.jpg --graph-json artifacts/ontology_map.json --json",
+            "purpose": "Create the NODEPROMPT-inspired ontology/evidence graph image.",
+            "save_as": "PNG + JPG + JSON",
+        },
+        {
+            "workflow": "Benchmark polish",
+            "command": "python tools/scripts/rag/general_rag_cli.py benchmark-polish --input-jsonl docs/benchmarks/obybk_rag_graphrag_inspection_benchmark_100.jsonl --output-dir artifacts/benchmark_check --no-llm",
+            "purpose": "Normalize/lint a domain QA snapshot with answerability and review policy.",
+            "save_as": "MD + JSONL + CSV",
+        },
+        {
+            "workflow": "CLI examples export",
+            "command": "python tools/scripts/rag/general_rag_cli.py cli-examples --format md --output docs/cli_examples.md --csv-output docs/cli_examples.csv --screenshot docs/assets/screenshots/cli_examples/cli_examples_export_screenshot.png",
+            "purpose": "Export this command catalog for README, submission notes, or reviewers.",
+            "save_as": "MD + CSV + PNG",
+        },
+    ]
+
+
+def _clip(value: Any, limit: int = 118) -> str:
+    text = " ".join(str(value or "").split())
+    return text if len(text) <= limit else text[: max(0, limit - 1)].rstrip() + "…"
+
+
+def render_cli_examples_markdown(rows: list[dict[str, str]]) -> str:
+    lines = [
+        "# CLI Examples",
+        "",
+        "These examples are portfolio-friendly commands for the core OBYBK / Bike Onto workflow.",
+        "",
+        "| Workflow | Command | Purpose | Save as |",
+        "|---|---|---|---|",
+    ]
+    for row in rows:
+        lines.append(
+            "| "
+            + " | ".join(
+                [
+                    row["workflow"],
+                    f"`{row['command']}`",
+                    row["purpose"],
+                    row["save_as"],
+                ]
+            ).replace("\n", " ")
+            + " |"
+        )
+    lines.append("")
+    return "\n".join(lines)
+
+
+def render_cli_examples_text(rows: list[dict[str, str]]) -> str:
+    lines = ["CLI Examples", "============", ""]
+    for index, row in enumerate(rows, start=1):
+        lines.extend(
+            [
+                f"{index}. {row['workflow']}",
+                f"   command: {_clip(row['command'], 132)}",
+                f"   purpose: {row['purpose']}",
+                f"   save_as: {row['save_as']}",
+                "",
+            ]
+        )
+    return "\n".join(lines)
+
+
+def write_cli_examples_csv(rows: list[dict[str, str]], output: Path) -> None:
+    output.parent.mkdir(parents=True, exist_ok=True)
+    with output.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=list(CLI_EXAMPLE_COLUMNS))
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def write_cli_examples_screenshot(rows: list[dict[str, str]], output: Path) -> None:
+    try:
+        from PIL import Image, ImageDraw, ImageFont
+    except Exception as exc:  # pragma: no cover
+        raise RuntimeError("Pillow is required for --screenshot") from exc
+
+    output.parent.mkdir(parents=True, exist_ok=True)
+    font_candidates = [
+        "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+    ]
+    font_path = next((item for item in font_candidates if Path(item).exists()), "")
+
+    def load_font(size: int):
+        if font_path:
+            try:
+                return ImageFont.truetype(font_path, size, index=0)
+            except TypeError:
+                return ImageFont.truetype(font_path, size)
+        return ImageFont.load_default()
+
+    title_font = load_font(34)
+    body_font = load_font(21)
+    small_font = load_font(18)
+    width = 1800
+    row_height = 132
+    height = 168 + row_height * min(len(rows), 6)
+    image = Image.new("RGB", (width, height), "#0b1020")
+    draw = ImageDraw.Draw(image)
+    draw.rounded_rectangle((28, 28, width - 28, height - 28), radius=28, fill="#111827", outline="#334155", width=2)
+    draw.text((64, 54), "Bike Onto CLI examples export", font=title_font, fill="#f8fafc")
+    draw.text((64, 96), "Supports Markdown / CSV output for reviewer notes and submissions", font=small_font, fill="#cbd5e1")
+
+    x_workflow, x_command, x_save = 64, 430, 1460
+    y = 144
+    headers = [("Workflow", x_workflow), ("Command", x_command), ("Save as", x_save)]
+    for label, x in headers:
+        draw.text((x, y), label, font=small_font, fill="#93c5fd")
+    y += 34
+    for row in rows[:6]:
+        draw.rounded_rectangle((52, y - 12, width - 52, y + row_height - 22), radius=18, fill="#0f172a", outline="#1f2937", width=1)
+        draw.text((x_workflow, y), _clip(row["workflow"], 28), font=body_font, fill="#f8fafc")
+        draw.text((x_command, y), _clip(row["command"], 86), font=small_font, fill="#e5e7eb")
+        draw.text((x_command, y + 34), _clip(row["purpose"], 92), font=small_font, fill="#94a3b8")
+        draw.text((x_save, y), _clip(row["save_as"], 28), font=body_font, fill="#bbf7d0")
+        y += row_height
+    image.save(output)
+
+
+def cli_examples(args: argparse.Namespace) -> int:
+    rows = build_cli_example_rows()
+    payload = {"generated_at": datetime.now(timezone.utc).isoformat(), "items": rows}
+    if args.format == "json":
+        rendered = json.dumps(payload, ensure_ascii=False, indent=2) + "\n"
+    elif args.format == "csv":
+        import io
+
+        buffer = io.StringIO()
+        writer = csv.DictWriter(buffer, fieldnames=list(CLI_EXAMPLE_COLUMNS))
+        writer.writeheader()
+        writer.writerows(rows)
+        rendered = buffer.getvalue()
+    elif args.format == "text":
+        rendered = render_cli_examples_text(rows)
+    else:
+        rendered = render_cli_examples_markdown(rows)
+
+    if args.output:
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        args.output.write_text(rendered, encoding="utf-8")
+    else:
+        print(rendered, end="" if rendered.endswith("\n") else "\n")
+    if args.csv_output:
+        write_cli_examples_csv(rows, args.csv_output)
+    if args.md_output:
+        args.md_output.parent.mkdir(parents=True, exist_ok=True)
+        args.md_output.write_text(render_cli_examples_markdown(rows), encoding="utf-8")
+    if args.screenshot:
+        write_cli_examples_screenshot(rows, args.screenshot)
+    if args.json_summary:
+        print(json.dumps({"output": str(args.output or ""), "md_output": str(args.md_output or ""), "csv_output": str(args.csv_output or ""), "screenshot": str(args.screenshot or ""), "count": len(rows)}, ensure_ascii=False, indent=2))
+    return 0
+
+
 def agent_run(args: argparse.Namespace) -> int:
     tool = AGENT_TOOL_REGISTRY.get(args.tool)
     if not tool:
@@ -1441,6 +1625,15 @@ def build_parser() -> argparse.ArgumentParser:
     inspect_parser.add_argument("--output", type=Path, help="Optional JSON manifest output path")
     inspect_parser.add_argument("--json", action="store_true")
     inspect_parser.set_defaults(func=inspect_dir)
+
+    cli_examples_parser = subparsers.add_parser("cli-examples", help="Print or export portfolio-friendly CLI examples as Markdown/CSV/JSON/text.")
+    cli_examples_parser.add_argument("--format", choices=["md", "csv", "json", "text"], default="text", help="Primary stdout/output format")
+    cli_examples_parser.add_argument("--output", type=Path, help="Optional output path for the primary format")
+    cli_examples_parser.add_argument("--md-output", type=Path, help="Optional Markdown export path")
+    cli_examples_parser.add_argument("--csv-output", type=Path, help="Optional CSV export path")
+    cli_examples_parser.add_argument("--screenshot", type=Path, help="Optional PNG screenshot path for README/submission use")
+    cli_examples_parser.add_argument("--json-summary", action="store_true", help="Print a compact JSON summary after writing files")
+    cli_examples_parser.set_defaults(func=cli_examples)
 
     demo_parser = subparsers.add_parser(
         "demo-wizard",
