@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -83,7 +84,10 @@ def _write_runtime_answers(path: Path) -> None:
     path.write_text("\n".join(json.dumps(row, ensure_ascii=False) for row in rows) + "\n", encoding="utf-8")
 
 
-def _run_cli(args: list[str], *, input_text: str | None = None) -> subprocess.CompletedProcess[str]:
+def _run_cli(args: list[str], *, input_text: str | None = None, env: dict[str, str] | None = None) -> subprocess.CompletedProcess[str]:
+    merged_env = os.environ.copy()
+    if env:
+        merged_env.update(env)
     return subprocess.run(
         [sys.executable, str(CLI_PATH), *args],
         input=input_text,
@@ -91,6 +95,7 @@ def _run_cli(args: list[str], *, input_text: str | None = None) -> subprocess.Co
         capture_output=True,
         check=True,
         cwd=TOOLS_DIR.parents[0],
+        env=merged_env,
     )
 
 
@@ -315,6 +320,26 @@ def test_general_rag_cli_snippet_store_roundtrip(tmp_path: Path) -> None:
     list_result = _run_cli(["snippet-list", "--db", str(db_path), "--tag", "rag", "--compact"])
     list_payload = json.loads(list_result.stdout)
     assert list_payload["snippets"][0][0] == "rag.snippet.template"
+
+
+def test_general_rag_cli_setup_status_and_zero_arg_chat(tmp_path: Path) -> None:
+    env = {"BIKE_ONTO_HOME": str(tmp_path / ".bike-onto")}
+
+    setup_result = _run_cli(["setup", "--yes", "--offline", "--json"], env=env)
+    setup_payload = json.loads(setup_result.stdout)
+    assert setup_payload["configured"] is True
+    assert setup_payload["llm_mode"] == "offline"
+    assert Path(setup_payload["config_path"]).exists()
+
+    status_result = _run_cli(["status", "--json"], env=env)
+    status_payload = json.loads(status_result.stdout)
+    assert status_payload["configured"] is True
+    assert status_payload["llm_mode"] == "offline"
+
+    chat_result = _run_cli([], input_text="오늘 먼저 확인해야 할 대상은?\nq\n", env=env)
+    assert "Bike Onto chat" in chat_result.stdout
+    assert "[답변]" in chat_result.stdout
+    assert "충무로역" in chat_result.stdout
 
 
 def test_general_rag_cli_ask_positional_question_uses_demo_fixture_without_long_flags() -> None:

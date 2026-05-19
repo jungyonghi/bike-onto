@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import csv
 from datetime import datetime, timezone
+import getpass
 import html
 import json
 import os
@@ -38,6 +39,9 @@ from rag.visual_inspector import build_evaluation_overview_payload, build_visual
 
 
 NATIVE_AGENT_COMMANDS = [
+    "setup",
+    "status",
+    "reset",
     "demo-wizard",
     "inspect-dir",
     "cli-examples",
@@ -203,6 +207,177 @@ CREATE INDEX IF NOT EXISTS idx_agent_snippets_tags ON agent_snippets(tags);
 """
 
 DB_TABLES = ["rag_runs", "rag_artifacts", "rag_evaluation_questions", "review_queue", "agent_snippets"]
+
+APP_HOME_ENV = "BIKE_ONTO_HOME"
+DEFAULT_CONFIG_VERSION = 1
+DEFAULT_LLM_MODEL = "gpt-5.2"
+DEFAULT_LLM_BASE_URL = "https://api.openai.com/v1"
+REPO_KEY_FILE = Path("config/openai_api_key.local")
+
+
+def _app_home() -> Path:
+    override = os.environ.get(APP_HOME_ENV, "").strip()
+    return Path(override).expanduser() if override else Path.home() / ".bike-onto"
+
+
+def _config_path() -> Path:
+    return _app_home() / "config.json"
+
+
+def _user_key_file_path() -> Path:
+    return _app_home() / "openai_api_key.local"
+
+
+def load_user_config() -> dict[str, Any]:
+    path = _config_path()
+    if not path.exists():
+        return {}
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+    return payload if isinstance(payload, dict) else {}
+
+
+def _save_user_config(config: dict[str, Any]) -> Path:
+    path = _config_path()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(config, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return path
+
+
+def _is_configured(config: dict[str, Any] | None = None) -> bool:
+    payload = config if config is not None else load_user_config()
+    return bool(payload.get("setup_complete"))
+
+
+def _write_openai_key_file(*, api_key: str, base_url: str, model: str) -> Path:
+    path = _user_key_file_path()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    lines = [
+        f"OPENAI_API_KEY={api_key.strip()}",
+        f"OPENAI_BASE_URL={base_url.strip() or DEFAULT_LLM_BASE_URL}",
+        f"OPENAI_MODEL={model.strip() or DEFAULT_LLM_MODEL}",
+    ]
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    try:
+        path.chmod(0o600)
+    except OSError:
+        pass
+    return path
+
+
+def _prompt_text(label: str, default: str = "") -> str:
+    suffix = f" [{default}]" if default else ""
+    value = input(f"{label}{suffix}: ").strip()
+    return value or default
+
+
+def _prompt_choice(label: str, choices: list[str], default: str) -> str:
+    choice_text = "/".join(choices)
+    while True:
+        value = _prompt_text(f"{label} ({choice_text})", default).lower()
+        if value in choices:
+            return value
+        print(f"가능한 값: {choice_text}")
+
+
+def _build_setup_config(args: argparse.Namespace, *, interactive: bool) -> dict[str, Any]:
+    if getattr(args, "offline", False) and getattr(args, "live", False):
+        raise ValueError("--offline and --live cannot be used together")
+
+    if interactive:
+        print("Bike Onto first-run setup")
+        print("- 기본값은 로컬 demo/offline 모드입니다. 외부 API나 DB가 없어도 바로 채팅할 수 있습니다.")
+        selected_mode = _prompt_choice("LLM mode: offline 또는 live", ["offline", "live"], "offline")
+    else:
+        selected_mode = "live" if getattr(args, "live", False) else "offline"
+
+    base_url = str(getattr(args, "base_url", "") or DEFAULT_LLM_BASE_URL)
+    model = str(getattr(args, "model", "") or DEFAULT_LLM_MODEL)
+    key_file = ""
+    if selected_mode == "live":
+        env_name = str(getattr(args, "api_key_env", "") or "OPENAI_API_KEY")
+        api_key = os.environ.get(env_name, "").strip()
+        if not api_key and interactive:
+            api_key = getpass.getpass(f"{env_name} API key (입력값은 표시되지 않음, 비우면 offline): ").strip()
+        if not api_key:
+            if not interactive:
+                raise ValueError(f"live setup requires an API key in environment variable {env_name}")
+            selected_mode = "offline"
+        else:
+            if interactive:
+                base_url = _prompt_text("OpenAI-compatible base URL", base_url)
+                model = _prompt_text("Model", model)
+            key_file = str(_write_openai_key_file(api_key=api_key, base_url=base_url, model=model))
+
+    retriever = str(getattr(args, "retriever", "") or "local")
+    dsn = str(getattr(args, "dsn", "") or "")
+    pgvector_table = str(getattr(args, "pgvector_table", "") or "obybk_rag_documents")
+    if interactive:
+        retriever = _prompt_choice("Retriever", ["local", "pgvector"], retriever)
+        if retriever == "pgvector":
+            dsn = _prompt_text("PostgreSQL DSN", dsn)
+            pgvector_table = _prompt_text("pgvector table", pgvector_table)
+
+    runtime_answers = getattr(args, "runtime_answers", None)
+    pgvector_seed = getattr(args, "pgvector_seed", None)
+    if interactive:
+        runtime_text = _prompt_text("Runtime answers JSONL path (비우면 built-in demo)", str(runtime_answers or ""))
+        seed_text = _prompt_text("Seed JSONL path (비우면 built-in demo)", str(pgvector_seed or ""))
+        runtime_answers = Path(runtime_text) if runtime_text else None
+        pgvector_seed = Path(seed_text) if seed_text else None
+
+    now = datetime.now(timezone.utc).isoformat()
+    return {
+        "version": DEFAULT_CONFIG_VERSION,
+        "setup_complete": True,
+        "created_at": now,
+        "updated_at": now,
+        "llm": {
+            "mode": "openai_compatible" if selected_mode == "live" else "offline",
+            "key_file": key_file,
+            "base_url": base_url,
+            "model": model,
+        },
+        "retrieval": {
+            "backend": retriever,
+            "dsn": dsn,
+            "pgvector_table": pgvector_table,
+        },
+        "data": {
+            "runtime_answers": str(runtime_answers) if runtime_answers else "",
+            "pgvector_seed": str(pgvector_seed) if pgvector_seed else "",
+        },
+        "ui": {"default_command": "chat", "verbose": False},
+    }
+
+
+def _apply_user_config(args: argparse.Namespace) -> argparse.Namespace:
+    config = load_user_config()
+    llm = config.get("llm") if isinstance(config.get("llm"), dict) else {}
+    retrieval = config.get("retrieval") if isinstance(config.get("retrieval"), dict) else {}
+    data = config.get("data") if isinstance(config.get("data"), dict) else {}
+
+    if getattr(args, "runtime_answers", None) is None and data.get("runtime_answers"):
+        args.runtime_answers = Path(str(data["runtime_answers"]))
+    if getattr(args, "pgvector_seed", None) is None and data.get("pgvector_seed"):
+        args.pgvector_seed = Path(str(data["pgvector_seed"]))
+    if getattr(args, "retriever", None) is None:
+        args.retriever = str(retrieval.get("backend") or "local")
+    if getattr(args, "dsn", None) is None:
+        args.dsn = str(retrieval.get("dsn") or os.environ.get("DATABASE_URL", ""))
+    if getattr(args, "pgvector_table", None) is None:
+        args.pgvector_table = str(retrieval.get("pgvector_table") or "obybk_rag_documents")
+    if getattr(args, "top_k", None) is None:
+        args.top_k = int(config.get("top_k") or 3)
+    if getattr(args, "key_file", None) is None:
+        configured_key_file = str(llm.get("key_file") or "").strip()
+        args.key_file = Path(configured_key_file) if configured_key_file else REPO_KEY_FILE
+    if str(llm.get("mode") or "") == "offline" and not getattr(args, "offline", False):
+        args.offline = True
+    return args
+
 
 DEMO_RUNTIME_ROWS: list[dict[str, Any]] = [
     {
@@ -675,6 +850,7 @@ def _question_from_args(args: argparse.Namespace) -> str:
 
 
 def ask(args: argparse.Namespace) -> int:
+    _apply_user_config(args)
     question = _question_from_args(args)
     llm_callable = _offline_llm if args.offline else None
     retrieved_contexts, retrieval_latency_ms = _retrieved_contexts(args, question)
@@ -767,7 +943,8 @@ def inspect_answer(args: argparse.Namespace) -> int:
 
 
 def chat(args: argparse.Namespace) -> int:
-    print("General RAG CLI chat. 종료: q / quit / exit")
+    _apply_user_config(args)
+    print("Bike Onto chat. 종료: q / quit / exit")
     while True:
         try:
             question = input("\n질문> ").strip()
@@ -791,11 +968,12 @@ def chat(args: argparse.Namespace) -> int:
             retrieval_backend=args.retriever,
             retrieval_latency_ms_override=retrieval_latency_ms,
         )
-        _print_answer(payload)
+        _print_answer(payload, verbose=getattr(args, "verbose", False))
     return 0
 
 
 def report(args: argparse.Namespace) -> int:
+    _apply_user_config(args)
     if not args.pgvector_seed:
         raise ValueError("--pgvector-seed is required for report")
     result = build_rag_llm_answer_report(
@@ -825,6 +1003,7 @@ def report(args: argparse.Namespace) -> int:
 
 
 def visual(args: argparse.Namespace) -> int:
+    _apply_user_config(args)
     llm_callable = _offline_llm if args.offline else None
     retrieved_contexts, retrieval_latency_ms = _retrieved_contexts(args, args.question)
     answer_payload = generate_rag_llm_answer(
@@ -1017,6 +1196,83 @@ def inspect_domain_directory(domain_dir: Path) -> dict[str, Any]:
     }
 
 
+def setup_cmd(args: argparse.Namespace) -> int:
+    config = _build_setup_config(args, interactive=not args.yes)
+    config_path = _save_user_config(config)
+    llm = config.get("llm", {})
+    retrieval = config.get("retrieval", {})
+    data = config.get("data", {})
+    if getattr(args, "json", False):
+        safe_payload = {
+            "configured": True,
+            "config_path": str(config_path),
+            "app_home": str(_app_home()),
+            "llm_mode": llm.get("mode"),
+            "model": llm.get("model"),
+            "key_file_exists": bool(llm.get("key_file") and Path(str(llm.get("key_file"))).exists()),
+            "retriever": retrieval.get("backend"),
+            "runtime_answers": data.get("runtime_answers", ""),
+            "pgvector_seed": data.get("pgvector_seed", ""),
+        }
+        print(json.dumps(safe_payload, ensure_ascii=False, indent=2))
+    else:
+        print("[Bike Onto setup 완료]")
+        print(f"- config: {config_path}")
+        print(f"- llm_mode: {llm.get('mode')}")
+        print(f"- model: {llm.get('model')}")
+        print(f"- retriever: {retrieval.get('backend')}")
+        if data.get("runtime_answers") or data.get("pgvector_seed"):
+            print(f"- runtime_answers: {data.get('runtime_answers') or '(built-in demo)'}")
+            print(f"- pgvector_seed: {data.get('pgvector_seed') or '(built-in demo)'}")
+        else:
+            print("- data: built-in demo fixture")
+        print("\n이제 인자 없이 실행하면 채팅 모드로 진입합니다: ./bike")
+    return 0
+
+
+def status_cmd(args: argparse.Namespace) -> int:
+    config = load_user_config()
+    llm = config.get("llm") if isinstance(config.get("llm"), dict) else {}
+    retrieval = config.get("retrieval") if isinstance(config.get("retrieval"), dict) else {}
+    data = config.get("data") if isinstance(config.get("data"), dict) else {}
+    key_file = Path(str(llm.get("key_file") or "")) if llm.get("key_file") else None
+    payload = {
+        "configured": _is_configured(config),
+        "app_home": str(_app_home()),
+        "config_path": str(_config_path()),
+        "llm_mode": llm.get("mode", "not_configured"),
+        "model": llm.get("model", ""),
+        "key_file_exists": bool(key_file and key_file.exists()),
+        "retriever": retrieval.get("backend", "local"),
+        "pgvector_table": retrieval.get("pgvector_table", "obybk_rag_documents"),
+        "runtime_answers": data.get("runtime_answers", ""),
+        "pgvector_seed": data.get("pgvector_seed", ""),
+    }
+    if args.json:
+        print(json.dumps(payload, ensure_ascii=False, indent=2))
+    else:
+        print("[Bike Onto status]")
+        for key, value in payload.items():
+            print(f"- {key}: {value}")
+    return 0
+
+
+def reset_cmd(args: argparse.Namespace) -> int:
+    home = _app_home()
+    if not args.yes and sys.stdin.isatty():
+        confirmed = _prompt_yes_no(f"{home} 설정과 로컬 key 파일을 삭제할까요?", False)
+        if not confirmed:
+            print("reset 취소")
+            return 0
+    if home.exists():
+        shutil.rmtree(home)
+    if args.json:
+        print(json.dumps({"reset": True, "app_home": str(home)}, ensure_ascii=False, indent=2))
+    else:
+        print(f"[Bike Onto reset 완료] {home}")
+    return 0
+
+
 def inspect_dir(args: argparse.Namespace) -> int:
     manifest = inspect_domain_directory(args.domain_dir)
     if args.output:
@@ -1190,44 +1446,50 @@ CLI_EXAMPLE_COLUMNS = ("workflow", "command", "purpose", "save_as")
 def build_cli_example_rows() -> list[dict[str, str]]:
     return [
         {
-            "workflow": "Ask like a chatbot",
-            "command": "python tools/scripts/rag/general_rag_cli.py ask \"오늘 먼저 확인해야 할 대상은?\" --offline",
-            "purpose": "Ask one question with the built-in demo fixture; no DB or long flags required.",
-            "save_as": "Terminal answer",
+            "workflow": "First-run setup",
+            "command": "./bike setup --yes --offline",
+            "purpose": "Create local user config once. Secrets, if used, live outside the repo under the user config directory.",
+            "save_as": "Local config",
+        },
+        {
+            "workflow": "Chatbot mode",
+            "command": "./bike",
+            "purpose": "After setup, start an interactive RAG chat loop with no long flags.",
+            "save_as": "Terminal chat",
         },
         {
             "workflow": "Inspect domain directory",
-            "command": "python tools/scripts/rag/general_rag_cli.py inspect-dir --domain-dir sample_data/rag_visual_inspector --output artifacts/domain_manifest.json --json",
+            "command": "./bike inspect-dir --domain-dir sample_data/rag_visual_inspector --output artifacts/domain_manifest.json --json",
             "purpose": "Resolve runnable artifact paths from a fragmented domain folder.",
             "save_as": "JSON manifest",
         },
         {
             "workflow": "Evaluation overview",
-            "command": "python tools/scripts/rag/general_rag_cli.py visual-eval --results-jsonl sample_data/rag_visual_inspector/sample_eval_results.jsonl --output artifacts/evaluation_overview.html --graph-json artifacts/evaluation_overview.visual_graph.json --json",
+            "command": "./bike visual-eval --results-jsonl sample_data/rag_visual_inspector/sample_eval_results.jsonl --output artifacts/evaluation_overview.html --graph-json artifacts/evaluation_overview.visual_graph.json --json",
             "purpose": "Render the 100-QA inspection overview as a local HTML visual graph.",
             "save_as": "HTML + JSON",
         },
         {
             "workflow": "Obsidian wiki export",
-            "command": "python tools/scripts/rag/general_rag_cli.py wiki-export --results-jsonl sample_data/rag_visual_inspector/sample_eval_results.jsonl --graph-json sample_data/rag_visual_inspector/sample_visual_graph.json --vault artifacts/OBYBK_RAG_Wiki --run-id demo_run --json",
+            "command": "./bike wiki-export --results-jsonl sample_data/rag_visual_inspector/sample_eval_results.jsonl --graph-json sample_data/rag_visual_inspector/sample_visual_graph.json --vault artifacts/OBYBK_RAG_Wiki --run-id demo_run --json",
             "purpose": "Project questions, entities, relations, and review queue into an Obsidian vault.",
             "save_as": "Markdown vault",
         },
         {
             "workflow": "Ontology map",
-            "command": "python tools/scripts/rag/general_rag_cli.py ontology-map --output artifacts/ontology_map.png --preview artifacts/ontology_map_preview.jpg --graph-json artifacts/ontology_map.json --json",
+            "command": "./bike ontology-map --output artifacts/ontology_map.png --preview artifacts/ontology_map_preview.jpg --graph-json artifacts/ontology_map.json --json",
             "purpose": "Create the NODEPROMPT-inspired ontology/evidence graph image.",
             "save_as": "PNG + JPG + JSON",
         },
         {
             "workflow": "Benchmark polish",
-            "command": "python tools/scripts/rag/general_rag_cli.py benchmark-polish --input-jsonl docs/benchmarks/obybk_rag_graphrag_inspection_benchmark_100.jsonl --output-dir artifacts/benchmark_check --no-llm",
+            "command": "./bike benchmark-polish --input-jsonl docs/benchmarks/obybk_rag_graphrag_inspection_benchmark_100.jsonl --output-dir artifacts/benchmark_check --no-llm",
             "purpose": "Normalize/lint a domain QA snapshot with answerability and review policy.",
             "save_as": "MD + JSONL + CSV",
         },
         {
             "workflow": "CLI examples export",
-            "command": "python tools/scripts/rag/general_rag_cli.py cli-examples --format md --output docs/cli_examples.md --csv-output docs/cli_examples.csv --screenshot docs/assets/screenshots/cli_examples/cli_examples_export_screenshot.png",
+            "command": "./bike cli-examples --format md --output docs/cli_examples.md --csv-output docs/cli_examples.csv --screenshot docs/assets/screenshots/cli_examples/cli_examples_export_screenshot.png",
             "purpose": "Export this command catalog for README, submission notes, or reviewers.",
             "save_as": "MD + CSV + PNG",
         },
@@ -1695,13 +1957,13 @@ def snippet_delete(args: argparse.Namespace) -> int:
 
 
 def add_common(parser: argparse.ArgumentParser) -> None:
-    parser.add_argument("--runtime-answers", type=Path, help="GraphRAG/runtime answer JSONL path. If omitted, ask/chat use a built-in demo fixture.")
-    parser.add_argument("--pgvector-seed", type=Path, help="pgvector seed JSONL path. If omitted, ask/chat use a built-in demo fixture.")
-    parser.add_argument("--retriever", choices=["local", "pgvector"], default="local", help="Retrieval backend for ask/chat/visual")
-    parser.add_argument("--dsn", default=os.environ.get("DATABASE_URL", ""), help="PostgreSQL DSN for --retriever pgvector")
-    parser.add_argument("--pgvector-table", default="obybk_rag_documents", help="PostgreSQL pgvector table name")
-    parser.add_argument("--key-file", type=Path, default=Path("config/openai_api_key.local"), help="OpenAI-compatible key file. Ignored when --offline is set.")
-    parser.add_argument("--top-k", type=int, default=3)
+    parser.add_argument("--runtime-answers", type=Path, help="GraphRAG/runtime answer JSONL path. If omitted, setup config or a built-in demo fixture is used.")
+    parser.add_argument("--pgvector-seed", type=Path, help="pgvector seed JSONL path. If omitted, setup config or a built-in demo fixture is used.")
+    parser.add_argument("--retriever", choices=["local", "pgvector"], help="Retrieval backend for ask/chat/visual")
+    parser.add_argument("--dsn", help="PostgreSQL DSN for --retriever pgvector")
+    parser.add_argument("--pgvector-table", help="PostgreSQL pgvector table name")
+    parser.add_argument("--key-file", type=Path, help="OpenAI-compatible key file. Ignored when --offline is set.")
+    parser.add_argument("--top-k", type=int)
     parser.add_argument("--offline", action="store_true", help="Do not call a live LLM; use deterministic grounded fallback.")
     parser.add_argument("--debug", action="store_true", help="Include Answer Composer debug section inside generated answers when supported.")
 
@@ -1711,6 +1973,30 @@ def build_parser() -> argparse.ArgumentParser:
         description="General-purpose RAG CLI: ask questions, chat interactively, or create screenshot/Markdown reports.",
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
+
+    setup_parser = subparsers.add_parser("setup", help="First-run setup wizard for chatbot-style default use.")
+    setup_parser.add_argument("--yes", action="store_true", help="Non-interactive setup with safe defaults")
+    setup_parser.add_argument("--offline", action="store_true", help="Use local deterministic fallback answers")
+    setup_parser.add_argument("--live", action="store_true", help="Use an OpenAI-compatible API key from --api-key-env")
+    setup_parser.add_argument("--api-key-env", default="OPENAI_API_KEY", help="Environment variable that contains the API key for --live")
+    setup_parser.add_argument("--base-url", default=DEFAULT_LLM_BASE_URL, help="OpenAI-compatible base URL")
+    setup_parser.add_argument("--model", default=DEFAULT_LLM_MODEL, help="Model name for live mode")
+    setup_parser.add_argument("--runtime-answers", type=Path, help="Optional runtime answer JSONL path to save in local config")
+    setup_parser.add_argument("--pgvector-seed", type=Path, help="Optional local seed JSONL path to save in local config")
+    setup_parser.add_argument("--retriever", choices=["local", "pgvector"], default="local", help="Default retriever after setup")
+    setup_parser.add_argument("--dsn", default="", help="Optional PostgreSQL DSN for pgvector mode")
+    setup_parser.add_argument("--pgvector-table", default="obybk_rag_documents", help="Default pgvector table name")
+    setup_parser.add_argument("--json", action="store_true")
+    setup_parser.set_defaults(func=setup_cmd)
+
+    status_parser = subparsers.add_parser("status", help="Show local setup status without printing secrets.")
+    status_parser.add_argument("--json", action="store_true")
+    status_parser.set_defaults(func=status_cmd)
+
+    reset_parser = subparsers.add_parser("reset", help="Delete local Bike Onto setup config and local key file.")
+    reset_parser.add_argument("--yes", action="store_true", help="Do not prompt before deleting local config")
+    reset_parser.add_argument("--json", action="store_true")
+    reset_parser.set_defaults(func=reset_cmd)
 
     inspect_parser = subparsers.add_parser(
         "inspect-dir",
@@ -1861,6 +2147,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     chat_parser = subparsers.add_parser("chat", help="Interactive terminal RAG Q&A.")
     add_common(chat_parser)
+    chat_parser.add_argument("--verbose", action="store_true", help="Show candidates, metrics, gaps, excerpts, and execution metadata for each answer")
     chat_parser.set_defaults(func=chat)
 
     report_parser = subparsers.add_parser("report", help="Generate per-question RAG answer Markdown report and screenshots.")
@@ -1929,7 +2216,47 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def boot_chat() -> int:
+    """Default zero-argument entrypoint: setup first, then chatbot-style chat."""
+    if not _is_configured():
+        if not sys.stdin.isatty():
+            print("Bike Onto setup이 먼저 필요합니다.", file=sys.stderr)
+            print("예: ./bike setup --yes --offline", file=sys.stderr)
+            return 2
+        setup_args = argparse.Namespace(
+            yes=False,
+            offline=False,
+            live=False,
+            api_key_env="OPENAI_API_KEY",
+            base_url=DEFAULT_LLM_BASE_URL,
+            model=DEFAULT_LLM_MODEL,
+            runtime_answers=None,
+            pgvector_seed=None,
+            retriever="local",
+            dsn="",
+            pgvector_table="obybk_rag_documents",
+            json=False,
+        )
+        setup_cmd(setup_args)
+    chat_args = argparse.Namespace(
+        runtime_answers=None,
+        pgvector_seed=None,
+        retriever=None,
+        dsn=None,
+        pgvector_table=None,
+        key_file=None,
+        top_k=None,
+        offline=False,
+        debug=False,
+        verbose=False,
+    )
+    return chat(chat_args)
+
+
 def main(argv: list[str] | None = None) -> int:
+    argv = list(sys.argv[1:] if argv is None else argv)
+    if not argv:
+        return boot_chat()
     parser = build_parser()
     args = parser.parse_args(argv)
     return int(args.func(args))
