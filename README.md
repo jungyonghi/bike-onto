@@ -1,6 +1,6 @@
 # Bike Onto
 
-**OBYBK — 비즈니스 모델 온톨로지 논리를 기반으로 한 CLI-first RAG 답변 검토 프레임워크**
+**OBYBK — 비즈니스 모델 온톨로지 논리를 기반으로 한 온프라미스·CLI-first RAG 답변 검토 프레임워크**
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-000000?style=flat-square&logo=python&logoColor=white&labelColor=000000" alt="Python">
@@ -13,11 +13,11 @@
 
 > **RAG finds evidence. OBYBK makes the answer inspectable.**
 
-OBYBK는 비즈니스 모델 온톨로지 논리를 기반으로 RAG 답변을 **claim, evidence, entity, relation, review gate**로 나누어 사람이 검토할 수 있는 산출물로 남기는 CLI-first framework입니다. CLI는 안정적인 백엔드로 유지하고, Pi agent extension은 이 검토 흐름을 기존 agent harness 안에서 도구처럼 호출할 수 있게 해주는 인터페이스입니다.
+OBYBK는 비즈니스 모델 온톨로지 논리를 기반으로 RAG 답변을 **claim, evidence, entity, relation, review gate**로 나누어 사람이 검토할 수 있는 산출물로 남기는 온프라미스·CLI-first framework입니다. CLI는 안정적인 백엔드로 유지하고, Pi agent extension은 이 검토 흐름을 기존 agent harness 안에서 도구처럼 호출할 수 있게 해주는 인터페이스입니다.
 
 서울 공공 모빌리티 데이터는 이 프레임워크를 검증하기 위한 **case-study binding**입니다. 이 프로젝트의 중심은 특정 서비스 분석기가 아닙니다. 핵심은 어떤 도메인 데이터든 RAG 답변을 검증 가능한 evidence graph로 바꾸는 방법입니다.
 
-> **Scope**: 이 repo는 production service가 아니라 포트폴리오용 구현입니다. 목표는 “운영 시스템 완성”이 아니라, RAG 답변을 inspection artifact로 바꾸는 설계와 CLI 흐름을 보여주는 것입니다.
+> **Scope**: 이 repo는 production service가 아니라 포트폴리오용 온프라미스 구현입니다. 목표는 “운영 시스템 완성”이 아니라, RAG 답변을 inspection artifact로 바꾸는 설계와 CLI 흐름을 보여주는 것입니다.
 
 ```mermaid
 flowchart LR
@@ -71,6 +71,7 @@ OBYBK는 다음 문제를 해결합니다.
 | CLI workflow | 구현됨: 첫 `setup`, 인자 없는 `./bike` chat, `inspect-dir`, `ask`, `chat`, `visual`, `visual-eval`, `wiki-export`, `ontology-map` |
 | Pi agent extension | 구현됨: project-local `.pi/extensions/bike-onto`, `/bike-*` commands, LLM이 호출할 수 있는 inspection tools |
 | RAG inspection payload | 구현됨: claim, evidence, entity, relation, review gate 분해 |
+| 온프라미스 실행 | 구현됨: 별도 관리형 서버 없이 local config와 CLI/Pi extension으로 실행 |
 | Ontology seed anchor | BMO 기반 blueprint와 재사용 가능한 upper ontology seed generator 문서화/구현 |
 | Visual workflow | 구현됨: clickable CLI links, ontology tree/radial page, app-window mode |
 | Evaluation | reference snapshot: domain-specific benchmark policy + Seoul Bike 100 QA case-study snapshot |
@@ -566,7 +567,7 @@ DB-only RAG와 Ontology-Hybrid inspection profile을 20문항으로 비교했습
 
 ## Getting Started
 
-기본 사용 방식은 두 가지입니다. **Pi agent extension에서는 자연어로 요청하고**, CLI에서는 첫 setup 뒤 `./bike`만 실행해 chat으로 들어갑니다. 긴 `--runtime-answers`, `--pgvector-seed` 옵션은 custom artifact를 붙일 때만 필요합니다.
+기본 사용 방식은 두 가지입니다. **Pi agent extension에서는 자연어로 요청하고**, CLI에서는 첫 setup 뒤 `./bike`만 실행해 chat으로 들어갑니다. 기본 전제는 별도 관리형 서버 없이 로컬/온프라미스 환경에서 실행하는 것입니다. 긴 `--runtime-answers`, `--pgvector-seed` 옵션은 custom artifact를 붙일 때만 필요합니다.
 
 - 추천 경로: `pi` 안에서 Bike Onto extension tools 사용
 - 직접 실행 경로: `./bike setup` 후 `./bike`
@@ -688,7 +689,7 @@ OPENAI_API_KEY=... ./bike setup --yes --live
 <summary>PowerShell command</summary>
 
 ```powershell
-PS C:\Projects> git clone <YOUR_REPO_URL> obybk
+PS C:\Projects> git clone https://github.com/jungyonghi/bike-onto.git obybk
 PS C:\Projects> cd obybk
 PS C:\Projects\obybk> py -3 -m venv venv
 PS C:\Projects\obybk> .\venv\Scripts\Activate.ps1
@@ -845,6 +846,7 @@ Current result:
 - 도메인별 entity resolver와 relation mapping은 도메인마다 보강해야 합니다.
 - 현재 performance snapshot은 LLM judge 기반의 소규모 diagnostic evaluation입니다. 독립 human evaluation과 multi-domain benchmark는 향후 과제입니다.
 - Pi agent extension은 현재 project-local adapter입니다. 독립 배포용 package나 full MCP server 구현은 향후 과제입니다.
+- 온프라미스 실행은 OS, path, Python 환경 차이를 사용자가 확인해야 합니다.
 - 대용량 원자료와 local credentials는 repository에 포함하지 않습니다.
 
 ---
