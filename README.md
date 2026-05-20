@@ -837,20 +837,6 @@ Current result:
 
 ---
 
-## Limitations
-
-- Ontology-Hybrid inspection은 DB-only RAG보다 느릴 수 있습니다.
-- 현재 runtime은 full OWL reasoner가 아니라 ontology-like inspection layer입니다.
-- Obsidian export는 ontology-like projection이며 완전한 OWL reasoner 결과물이 아닙니다.
-- live pgvector retrieval에는 PostgreSQL/pgvector DSN과 seed table이 필요합니다.
-- 도메인별 entity resolver와 relation mapping은 도메인마다 보강해야 합니다.
-- 현재 performance snapshot은 LLM judge 기반의 소규모 diagnostic evaluation입니다. 독립 human evaluation과 multi-domain benchmark는 향후 과제입니다.
-- Pi agent extension은 현재 project-local adapter입니다. 독립 배포용 package나 full MCP server 구현은 향후 과제입니다.
-- 온프라미스 실행은 OS, path, Python 환경 차이를 사용자가 확인해야 합니다.
-- 대용량 원자료와 local credentials는 repository에 포함하지 않습니다.
-
----
-
 ## References
 
 1. Osterwalder, A. (2004). **The Business Model Ontology: A Proposition in a Design Science Approach**.
