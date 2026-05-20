@@ -1,6 +1,6 @@
 # Bike Onto
 
-**OBYBK — Pi agent extension으로 사용하는 CLI-first RAG 답변 검토 프레임워크 프로토타입**
+**OBYBK — 비즈니스 모델 온톨로지 논리를 기반으로 한 CLI-first RAG 답변 검토 프레임워크**
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-000000?style=flat-square&logo=python&logoColor=white&labelColor=000000" alt="Python">
@@ -13,11 +13,11 @@
 
 > **RAG finds evidence. OBYBK makes the answer inspectable.**
 
-OBYBK는 RAG 답변을 단순한 자연어 텍스트로 끝내지 않고, **claim, evidence, entity, relation, review gate**로 나누어 사람이 검토할 수 있는 산출물로 남기는 CLI-first framework prototype입니다. CLI는 안정적인 백엔드로 유지하고, Pi agent extension은 이 검토 흐름을 기존 agent harness 안에서 도구처럼 호출할 수 있게 해주는 인터페이스입니다.
+OBYBK는 비즈니스 모델 온톨로지 논리를 기반으로 RAG 답변을 **claim, evidence, entity, relation, review gate**로 나누어 사람이 검토할 수 있는 산출물로 남기는 CLI-first framework입니다. CLI는 안정적인 백엔드로 유지하고, Pi agent extension은 이 검토 흐름을 기존 agent harness 안에서 도구처럼 호출할 수 있게 해주는 인터페이스입니다.
 
 서울 공공 모빌리티 데이터는 이 프레임워크를 검증하기 위한 **case-study binding**입니다. 이 프로젝트의 중심은 특정 서비스 분석기가 아닙니다. 핵심은 어떤 도메인 데이터든 RAG 답변을 검증 가능한 evidence graph로 바꾸는 방법입니다.
 
-> **Scope**: 이 repo는 production service가 아니라 portfolio-grade prototype입니다. 목표는 “운영 시스템 완성”이 아니라, RAG 답변을 inspection artifact로 바꾸는 설계와 CLI 흐름을 보여주는 것입니다.
+> **Scope**: 이 repo는 production service가 아니라 포트폴리오용 구현입니다. 목표는 “운영 시스템 완성”이 아니라, RAG 답변을 inspection artifact로 바꾸는 설계와 CLI 흐름을 보여주는 것입니다.
 
 ```mermaid
 flowchart LR
@@ -64,18 +64,18 @@ OBYBK는 다음 문제를 해결합니다.
 
 ## Implementation Status
 
-이 README는 prototype으로 구현한 부분과 아직 production-ready로 주장하지 않는 부분을 나누어 적습니다.
+이 README는 구현된 부분과 아직 production-ready로 주장하지 않는 부분을 나누어 적습니다.
 
 | Area | Status |
 |---|---|
-| CLI workflow | prototype으로 구현: 첫 `setup`, 인자 없는 `./bike` chat, `inspect-dir`, `ask`, `chat`, `visual`, `visual-eval`, `wiki-export`, `ontology-map` |
-| Pi agent extension | prototype으로 구현: project-local `.pi/extensions/bike-onto`, `/bike-*` commands, LLM이 호출할 수 있는 inspection tools |
-| RAG inspection payload | prototype으로 구현: claim, evidence, entity, relation, review gate 분해 |
+| CLI workflow | 구현됨: 첫 `setup`, 인자 없는 `./bike` chat, `inspect-dir`, `ask`, `chat`, `visual`, `visual-eval`, `wiki-export`, `ontology-map` |
+| Pi agent extension | 구현됨: project-local `.pi/extensions/bike-onto`, `/bike-*` commands, LLM이 호출할 수 있는 inspection tools |
+| RAG inspection payload | 구현됨: claim, evidence, entity, relation, review gate 분해 |
 | Ontology seed anchor | BMO 기반 blueprint와 재사용 가능한 upper ontology seed generator 문서화/구현 |
-| Visual workflow | prototype으로 구현: clickable CLI links, ontology tree/radial page, app-window mode |
+| Visual workflow | 구현됨: clickable CLI links, ontology tree/radial page, app-window mode |
 | Evaluation | reference snapshot: domain-specific benchmark policy + Seoul Bike 100 QA case-study snapshot |
-| Obsidian projection | prototype으로 구현: run/question/entity/relation/review notes와 backlinks |
-| Retrieval store | local/prototype adapter: SQLite handoff + PostgreSQL/pgvector adapter |
+| Obsidian projection | 구현됨: run/question/entity/relation/review notes와 backlinks |
+| Retrieval store | local adapter: SQLite handoff + PostgreSQL/pgvector adapter |
 | Tests | packaged fixtures와 smoke/regression tests 기준 `187 passed, 3 warnings` |
 | Not claimed | production deployment, managed service, complete domain DB reproduction, full OWL reasoner runtime, complete OWL validation pipeline, independent human evaluation |
 
@@ -141,17 +141,17 @@ docs/project/business_model_ontology_owl2dl_formalization_blueprint.md
 
 ---
 
-## Ontology Seed 기준: 비즈니스 모델 온톨로지
+## Ontology Seed 기준: 비즈니스 모델 온톨로지 논리
 
-OBYBK의 ontology seed는 임의의 태그 묶음이 아닙니다. Alexander Osterwalder의 **비즈니스 모델 온톨로지(Business Model Ontology)** 논문을 기준으로 삼아 구현했습니다.
+OBYBK의 ontology seed는 임의의 태그 묶음이 아닙니다. Alexander Osterwalder의 **비즈니스 모델 온톨로지(Business Model Ontology)** 논리를 기반으로 구현했습니다.
 
-OBYBK의 큰 축은 LLM이 즉흥적으로 만든 분류가 아니라, 논문 기반 개념 모델에서 출발합니다. LLM은 표현 정리와 후보 확장을 돕지만, 최상위 ontology axis는 비즈니스 모델 온톨로지의 pillar/element와 OWL 2 DL-style blueprint로 고정합니다.
+OBYBK의 큰 축은 LLM이 즉흥적으로 만든 분류가 아니라, 논문 기반 개념 모델에서 출발합니다. LLM은 표현 정리와 후보 확장을 돕지만, 최상위 ontology axis는 비즈니스 모델 온톨로지 논리와 OWL 2 DL-style blueprint로 고정합니다.
 
-핵심 흐름: **비즈니스 모델 온톨로지 논문 → OWL 2 DL-style blueprint → upper ontology seed → domain benchmark → 검토 가능한 RAG graph**
+핵심 흐름: **비즈니스 모델 온톨로지 논리 → OWL 2 DL-style blueprint → upper ontology seed → domain benchmark → 검토 가능한 RAG graph**
 
 ```mermaid
 flowchart LR
-    BMO[비즈니스 모델 온톨로지 논문] --> BP[OWL 2 DL-style blueprint]
+    BMO[비즈니스 모델 온톨로지 논리] --> BP[OWL 2 DL-style blueprint]
     BP --> US[Upper ontology seed]
     US --> DB[Domain benchmark]
     DB --> RG[RAG inspection graph]
@@ -353,7 +353,7 @@ OBYBK의 runtime은 domain artifact를 RAG answer payload로 만들고, 이를 i
 ```mermaid
 flowchart LR
     subgraph S[Ontology Seed]
-        BMO[비즈니스 모델 온톨로지 논문]
+        BMO[비즈니스 모델 온톨로지 논리]
         BP[OWL 2 DL-style blueprint]
         US[Upper ontology seed]
         BMO --> BP --> US
@@ -600,7 +600,7 @@ Bike Onto는 별도 챗봇 앱보다 **Pi agent extension으로 기존 agent har
 Project-local extension은 `.pi/extensions/bike-onto/index.ts`에 있습니다. repo root(저장소 루트)에서 `pi`를 실행하면 자동으로 발견됩니다.
 
 중요한 점은 extension이 방법론을 바꾸지 않는다는 것입니다. extension은 기존 CLI-first inspection core를 그대로 호출하는 adapter입니다.
-즉, 비즈니스 모델 온톨로지를 기준으로 만든 ontology seed, claim/evidence/entity/relation/review gate 분해, Visual Inspector, Wiki Export 흐름은 그대로 유지됩니다.
+즉, 비즈니스 모델 온톨로지 논리를 기반으로 만든 ontology seed, claim/evidence/entity/relation/review gate 분해, Visual Inspector, Wiki Export 흐름은 그대로 유지됩니다.
 
 ```text
 Pi prompt → extension tool → ./bike CLI core → inspection artifact → Pi answer
