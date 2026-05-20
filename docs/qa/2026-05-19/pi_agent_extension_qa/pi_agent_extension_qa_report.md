@@ -1,41 +1,41 @@
-# Bike Onto Pi Agent Extension QA Report
+# Bike Onto Pi Agent Extension QA 보고서
 
 # Timestamp: 2026-05-19 15:25:00
 
-## Summary
+## 요약
 
-- Overall status: **PASS**
-- Branch: `feat/pi-extension`
-- Commit under test: `382095e`
-- Isolated setup home: `/tmp/bike_onto_pi_agent_extension_qa_home`
-- Output directory: `docs/qa/2026-05-19/pi_agent_extension_qa`
-- Passed: `10` / Failed: `0`
-- Full regression suite: `187 passed, 3 warnings`
+- 전체 결과: **PASS**
+- 브랜치: `feat/pi-extension`
+- 테스트 대상 커밋: `382095e`
+- 격리된 setup 위치: `/tmp/bike_onto_pi_agent_extension_qa_home`
+- 산출물 위치: `docs/qa/2026-05-19/pi_agent_extension_qa`
+- 통과: `10` / 실패: `0`
+- 전체 회귀 테스트: `187 passed, 3 warnings`
 
-## Screenshots
+## 스크린샷
 
 ![QA terminal smoke](screenshots/qa_terminal_smoke.png)
 
 ![QA artifact summary](screenshots/qa_artifact_summary.png)
 
-## Test Results
+## 테스트 결과
 
-| ID | Status | Scenario | Evidence log |
+| ID | Status | 시나리오 | 증거 로그 |
 |---|---|---|---|
-| QA-001 | PASS | First-run setup creates local offline config | `docs/qa/2026-05-19/pi_agent_extension_qa/logs/01_setup.json` |
-| QA-002 | PASS | Status reports local setup without secrets | `docs/qa/2026-05-19/pi_agent_extension_qa/logs/02_status.json` |
-| QA-003 | PASS | Zero-argument chat accepts stdin question | `docs/qa/2026-05-19/pi_agent_extension_qa/logs/03_zero_arg_chat.txt` |
-| QA-004 | PASS | One-shot JSON answer contract | `docs/qa/2026-05-19/pi_agent_extension_qa/logs/04_ask_answer.json` |
-| QA-005 | PASS | Visual Inspector artifact generation | `docs/qa/2026-05-19/pi_agent_extension_qa/logs/05_visual.json` |
-| QA-006 | PASS | NODEPROMPT-inspired ontology map generation | `docs/qa/2026-05-19/pi_agent_extension_qa/logs/06_ontology_map.json` |
-| QA-007 | PASS | Obsidian ontology-like wiki export | `docs/qa/2026-05-19/pi_agent_extension_qa/logs/07_wiki_export.json` |
-| QA-008 | PASS | Pi extension static registration tests | `docs/qa/2026-05-19/pi_agent_extension_qa/logs/08_pytest_pi_extension.txt` |
-| QA-009 | PASS | Full regression test suite | `docs/qa/2026-05-19/pi_agent_extension_qa/logs/09_pytest_full.txt` |
-| QA-010 | PASS | README image/keyword and targeted secret check | `docs/qa/2026-05-19/pi_agent_extension_qa/logs/10_readme_secret_check.json` |
+| QA-001 | PASS | 첫 setup이 local offline config를 만든다 | `docs/qa/2026-05-19/pi_agent_extension_qa/logs/01_setup.json` |
+| QA-002 | PASS | status가 secret 없이 local setup 상태를 보여준다 | `docs/qa/2026-05-19/pi_agent_extension_qa/logs/02_status.json` |
+| QA-003 | PASS | 인자 없는 chat이 stdin 질문을 받는다 | `docs/qa/2026-05-19/pi_agent_extension_qa/logs/03_zero_arg_chat.txt` |
+| QA-004 | PASS | one-shot JSON 답변 계약을 확인한다 | `docs/qa/2026-05-19/pi_agent_extension_qa/logs/04_ask_answer.json` |
+| QA-005 | PASS | Visual Inspector artifact를 생성한다 | `docs/qa/2026-05-19/pi_agent_extension_qa/logs/05_visual.json` |
+| QA-006 | PASS | NODEPROMPT-inspired ontology map을 생성한다 | `docs/qa/2026-05-19/pi_agent_extension_qa/logs/06_ontology_map.json` |
+| QA-007 | PASS | Obsidian ontology-like wiki를 내보낸다 | `docs/qa/2026-05-19/pi_agent_extension_qa/logs/07_wiki_export.json` |
+| QA-008 | PASS | Pi extension command/tool 등록을 확인한다 | `docs/qa/2026-05-19/pi_agent_extension_qa/logs/08_pytest_pi_extension.txt` |
+| QA-009 | PASS | 전체 회귀 테스트를 실행한다 | `docs/qa/2026-05-19/pi_agent_extension_qa/logs/09_pytest_full.txt` |
+| QA-010 | PASS | README 이미지, 금지 키워드, 주요 secret 패턴을 확인한다 | `docs/qa/2026-05-19/pi_agent_extension_qa/logs/10_readme_secret_check.json` |
 
-## Artifact Evidence
+## Artifact 증거
 
-| Artifact | Exists | Size bytes |
+| Artifact | 존재 여부 | 크기(bytes) |
 |---|---:|---:|
 | visual_html | `True` | `53489` |
 | visual_graph_json | `True` | `31988` |
@@ -44,23 +44,23 @@
 | ontology_json | `True` | `16585` |
 | wiki_index | `True` | `2078` |
 
-## Pi Agent Extension Coverage
+## Pi Agent Extension 검증 범위
 
 - Project-local extension path: `.pi/extensions/bike-onto/index.ts`
-- Commands checked: `/bike-setup`, `/bike-status`, `/bike-tools`
-- Tools checked: `bike_rag_answer`, `bike_visual_inspect`, `bike_ontology_map`, `bike_wiki_export`
-- Adapter model checked: Pi tool calls wrap the stable `./bike` CLI core.
+- 확인한 commands: `/bike-setup`, `/bike-status`, `/bike-tools`
+- 확인한 tools: `bike_rag_answer`, `bike_visual_inspect`, `bike_ontology_map`, `bike_wiki_export`
+- Adapter model 확인: Pi tool call이 안정적인 `./bike` CLI core를 감싸서 호출한다.
 
-## README / Secret Check
+## README / Secret 확인
 
-- Missing README images: `[]`
-- Forbidden README keywords: `{}`
-- Targeted secret hits: `{}`
-- Pi extension documented: `True`
-- Adapter note documented: `True`
+- 누락된 README 이미지: `[]`
+- README 금지 키워드: `{}`
+- 주요 secret 패턴 탐지: `{}`
+- Pi extension 문서화 여부: `True`
+- Adapter 설명 문서화 여부: `True`
 
-## Notes
+## 비고
 
-- QA used offline mode and a temporary `BIKE_ONTO_HOME` so no external API or production DB was required.
-- pgvector live retrieval and real Pi interactive LLM turns remain optional/manual checks.
-- The Pi extension is validated as a project-local adapter over the CLI-first inspection core, not as a full MCP server.
+- QA는 offline mode와 임시 `BIKE_ONTO_HOME`을 사용했습니다. 외부 API나 production DB는 필요하지 않았습니다.
+- pgvector live retrieval과 실제 Pi interactive LLM turn은 optional/manual check로 남겨두었습니다.
+- Pi extension은 full MCP server가 아니라, CLI-first inspection core 위에 붙는 project-local adapter로 검증했습니다.
