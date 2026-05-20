@@ -689,7 +689,7 @@ OPENAI_API_KEY=... ./bike setup --yes --live
 <summary>PowerShell command</summary>
 
 ```powershell
-PS C:\Projects> git clone <YOUR_REPO_URL> obybk
+PS C:\Projects> git clone https://github.com/jungyonghi/bike-onto.git obybk
 PS C:\Projects> cd obybk
 PS C:\Projects\obybk> py -3 -m venv venv
 PS C:\Projects\obybk> .\venv\Scripts\Activate.ps1
