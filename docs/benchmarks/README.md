@@ -2,7 +2,7 @@
 
 # OBYBK Benchmarks
 
-이 디렉토리는 OBYBK를 특정 도메인 챗봇이 아니라 **범용 RAG/GraphRAG Inspection Framework**로 평가하기 위한 benchmark 문서를 보관한다.
+이 디렉토리는 OBYBK를 특정 도메인 챗봇이 아니라 **범용 RAG/GraphRAG 답변 검토 프레임워크**로 평가하기 위한 benchmark 문서를 보관한다.
 
 ## Benchmark Policy
 
